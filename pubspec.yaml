@@ -1,0 +1,48 @@
+name: reusemart_app
+description: "Aplikasi mobile ReUseMart untuk marketplace barang bekas berkualitas"
+
+# Publish ke pub.dev (jangan publish karena ini project pribadi)
+publish_to: 'none'
+
+# Versi aplikasi
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+  flutter: ">=3.10.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # State Management
+  provider: ^6.1.1
+
+  # HTTP Requests
+  http: ^1.1.0
+
+  # Storage
+  shared_preferences: ^2.2.2
+  flutter_secure_storage: ^9.0.0
+
+  # UI Components & Icons
+  cupertino_icons: ^1.0.6
+
+  # Google Fonts
+  google_fonts: ^6.1.0
+
+  # 🔥 Tambahkan Firebase packages 🔥
+  firebase_core: ^2.24.2
+  firebase_messaging: ^14.7.10
+  flutter_local_notifications: ^17.1.0
+  permission_handler: ^11.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  # Linting rules
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
