@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'utils/routes.dart';
 import 'providers/auth_provider.dart';
+import 'providers/kurir_provider.dart'; // ⭐ TAMBAHAN INI
 import 'services/enhanced_firebase_service.dart';
 import 'services/storage_service.dart';
 import 'utils/colors.dart';
@@ -56,6 +57,9 @@ class ReUseMartApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(
           create: (_) => AuthProvider(),
+        ),
+        ChangeNotifierProvider( // ⭐ TAMBAHAN INI
+          create: (_) => KurirProvider(),
         ),
         // Add other providers here if needed
       ],

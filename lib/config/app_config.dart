@@ -2,7 +2,7 @@ class AppConfig {
   // ============= LARAVEL BACKEND CONFIGURATION =============
   
   // Menggunakan IP address komputer Anda
-  static const String baseUrl = 'http://192.168.0.67:8000';
+  static const String baseUrl = 'http://192.168.1.5:8000';
   
   // Alternatif URL untuk testing berbeda platform:
   // static const String baseUrl = 'http://10.0.2.2:8000';        // Untuk Android Emulator
@@ -30,6 +30,10 @@ class AppConfig {
   static const String penitipEndpoint = '$apiUrl/penitip';
   static const String organisasiEndpoint = '$apiUrl/organisasi';
   static const String alamatEndpoint = '$apiUrl/alamat';
+
+  // ============= KURIR SPECIFIC ENDPOINTS =============
+  static const String kurirProfileEndpoint = '$apiUrl/kurir/profile';
+  static const String kurirTasksEndpoint = '$apiUrl/kurir/delivery-tasks';
   
   // ============= LOCAL STORAGE KEYS =============
   static const String authTokenKey = 'auth_token';
