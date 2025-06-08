@@ -1,4 +1,4 @@
-// File: lib/config/routes.dart
+// File: lib/utils/routes.dart - UPDATE YOUR EXISTING FILE
 
 import 'package:flutter/material.dart';
 import '../screens/auth/splash_screen.dart';
@@ -8,6 +8,10 @@ import '../screens/dashboards/pembeli_dashboard.dart';
 import '../screens/dashboards/penitip_dashboard.dart';
 import '../screens/dashboards/kurir_dashboard.dart';
 import '../screens/dashboards/hunter_dashboard.dart';
+// ADD THESE NEW IMPORTS
+import '../screens/merchandise/merchandise_catalog_screen.dart';
+import '../screens/merchandise/merchandise_detail_screen.dart';
+import '../models/merchandise.dart';
 
 class AppRoutes {
   // Route Names
@@ -18,6 +22,10 @@ class AppRoutes {
   static const String penitipDashboard = '/penitip-dashboard';
   static const String kurirDashboard = '/kurir-dashboard';
   static const String hunterDashboard = '/hunter-dashboard';
+  
+  // ADD THESE NEW MERCHANDISE ROUTES
+  static const String merchandiseCatalog = '/merchandise-catalog';
+  static const String merchandiseDetail = '/merchandise-detail';
 
   // Static Routes Map
   static Map<String, WidgetBuilder> get routes => {
@@ -28,6 +36,9 @@ class AppRoutes {
     penitipDashboard: (context) => const PenitipDashboard(),
     kurirDashboard: (context) => const KurirDashboard(),
     hunterDashboard: (context) => const HunterDashboard(),
+    
+    // ADD THIS NEW MERCHANDISE ROUTE
+    merchandiseCatalog: (context) => const MerchandiseCatalogScreen(),
   };
 
   // Dynamic Route Generator
@@ -42,6 +53,12 @@ class AppRoutes {
       case login:
         return MaterialPageRoute(
           builder: (context) => const LoginScreen(),
+          settings: settings,
+        );
+        
+      case home:
+        return MaterialPageRoute(
+          builder: (context) => const HomeScreen(),
           settings: settings,
         );
         
@@ -66,6 +83,28 @@ class AppRoutes {
       case hunterDashboard:
         return MaterialPageRoute(
           builder: (context) => const HunterDashboard(),
+          settings: settings,
+        );
+        
+      // ADD THESE NEW MERCHANDISE ROUTES
+      case merchandiseCatalog:
+        return MaterialPageRoute(
+          builder: (context) => const MerchandiseCatalogScreen(),
+          settings: settings,
+        );
+        
+      case merchandiseDetail:
+        // Handle merchandise detail with arguments
+        if (settings.arguments is Merchandise) {
+          return MaterialPageRoute(
+            builder: (context) => MerchandiseDetailScreen(
+              merchandise: settings.arguments as Merchandise,
+            ),
+            settings: settings,
+          );
+        }
+        return MaterialPageRoute(
+          builder: (context) => const NotFoundScreen(),
           settings: settings,
         );
         
