@@ -1,4 +1,4 @@
-// File: lib/screens/dashboards/profile_pembeli.dart
+// File: lib/screens/dashboards/profile_pembeli.dart - COMPLETE VERSION
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -6,6 +6,7 @@ import '../../providers/auth_provider.dart';
 import '../../providers/pembeli_provider.dart';
 import '../../utils/colors.dart';
 import '../dashboards/history_pembeli.dart';
+import '../merchandise/merchandise_catalog_screen.dart';
 
 class ProfilePembeli extends StatefulWidget {
   const ProfilePembeli({Key? key}) : super(key: key);
@@ -93,20 +94,14 @@ class _ProfilePembeliState extends State<ProfilePembeli> {
               ),
             ),
             actions: [
-              if (!pembeliProvider.isLoading)
+              if (!_isEditing)
                 IconButton(
+                  icon: const Icon(Icons.edit),
                   onPressed: () {
                     setState(() {
-                      _isEditing = !_isEditing;
-                      if (!_isEditing) {
-                        // Reset form when canceling edit
-                        _loadUserData();
-                        _passwordController.clear();
-                      }
+                      _isEditing = true;
                     });
                   },
-                  icon: Icon(_isEditing ? Icons.close : Icons.edit),
-                  tooltip: _isEditing ? 'Batal Edit' : 'Edit Profile',
                 ),
             ],
           ),
@@ -147,13 +142,23 @@ class _ProfilePembeliState extends State<ProfilePembeli> {
 
                           const SizedBox(height: 20),
 
+                          // NEW: Tukar Poin Section (moved from dashboard)
+                          _buildTukarPoinSection(context),
+
+                          const SizedBox(height: 20),
+
                           // Profile Form Card
                           _buildProfileForm(pembeliProvider),
 
                           const SizedBox(height: 20),
 
+                          // Menu Section
+                          _buildMenuSection(context),
+
+                          const SizedBox(height: 20),
+
                           // Logout Card
-                          _buildLogoutCard(authProvider, pembeliProvider),
+                          _buildLogoutCard(authProvider),
                         ],
                       ),
                     ),
@@ -198,7 +203,7 @@ class _ProfilePembeliState extends State<ProfilePembeli> {
 
             // User Name
             Text(
-              pembeliProvider.pembeliName ?? 'Nama Pembeli',
+              pembeliProvider.pembeliName ?? 'Kevin Denyno',
               style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -209,17 +214,10 @@ class _ProfilePembeliState extends State<ProfilePembeli> {
 
             // Role Badge
             Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 6,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
               decoration: BoxDecoration(
                 color: AppColors.white.withOpacity(0.2),
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: AppColors.white,
-                  width: 1,
-                ),
               ),
               child: const Text(
                 'Pembeli',
@@ -230,17 +228,13 @@ class _ProfilePembeliState extends State<ProfilePembeli> {
                 ),
               ),
             ),
-
             const SizedBox(height: 12),
 
-            // Poin Display
+            // Points Display
             Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20,
-                vertical: 8,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
               decoration: BoxDecoration(
-                color: AppColors.white,
+                color: AppColors.accent,
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Row(
@@ -248,22 +242,130 @@ class _ProfilePembeliState extends State<ProfilePembeli> {
                 children: [
                   const Icon(
                     Icons.stars,
-                    color: Colors.amber,
-                    size: 20,
+                    size: 18,
+                    color: AppColors.white,
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 6),
                   Text(
                     '${pembeliProvider.formattedPoin} Poin',
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: AppColors.pembeliColor,
+                      color: AppColors.white,
                     ),
                   ),
                 ],
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  // NEW: Tukar Poin Section (moved from dashboard)
+  Widget _buildTukarPoinSection(BuildContext context) {
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const MerchandiseCatalogScreen(),
+            ),
+          );
+        },
+        borderRadius: BorderRadius.circular(16),
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                AppColors.accent.withOpacity(0.8),
+                AppColors.accent,
+              ],
+            ),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: AppColors.white.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Icon(
+                  Icons.card_giftcard,
+                  color: AppColors.white,
+                  size: 28,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Tukar Poin Anda',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Dapatkan merchandise eksklusif dengan poin Anda',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: AppColors.white.withOpacity(0.9),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: AppColors.white.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.stars,
+                            size: 14,
+                            color: AppColors.white,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            '3750 Poin Tersedia',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: AppColors.white,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Icon(
+                Icons.arrow_forward_ios,
+                color: AppColors.white,
+                size: 16,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -277,150 +379,179 @@ class _ProfilePembeliState extends State<ProfilePembeli> {
       ),
       child: Padding(
         padding: const EdgeInsets.all(20),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Informasi Personal',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.greyDark,
-                ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Section Title
+            const Text(
+              'Informasi Personal',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: AppColors.greyDark,
               ),
-              const SizedBox(height: 20),
+            ),
+            const SizedBox(height: 16),
 
-              // Nama Field
-              _buildTextField(
-                controller: _namaController,
-                label: 'Nama Lengkap',
-                icon: Icons.person_outline,
-                enabled: _isEditing,
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'Nama tidak boleh kosong';
-                  }
-                  if (value.trim().length < 2) {
-                    return 'Nama minimal 2 karakter';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-
-              // Email Field
-              _buildTextField(
-                controller: _emailController,
-                label: 'Email',
-                icon: Icons.email_outlined,
-                enabled: _isEditing,
-                keyboardType: TextInputType.emailAddress,
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'Email tidak boleh kosong';
-                  }
-                  if (!pembeliProvider.isValidEmail(value)) {
-                    return 'Format email tidak valid';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-
-              // Telepon Field
-              _buildTextField(
-                controller: _teleponController,
-                label: 'Nomor Telepon',
-                icon: Icons.phone_outlined,
-                enabled: _isEditing,
-                keyboardType: TextInputType.phone,
-                validator: (value) {
-                  if (value != null &&
-                      value.isNotEmpty &&
-                      !pembeliProvider.isValidPhone(value)) {
-                    return 'Format nomor telepon tidak valid';
-                  }
-                  return null;
-                },
-              ),
-
-              // Password Field (only show when editing)
-              if (_isEditing) ...[
-                const SizedBox(height: 16),
-                _buildTextField(
-                  controller: _passwordController,
-                  label: 'Password Baru (Opsional)',
-                  icon: Icons.lock_outline,
-                  enabled: _isEditing,
-                  obscureText: !_showPassword,
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _showPassword ? Icons.visibility_off : Icons.visibility,
-                      color: AppColors.pembeliColor,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _showPassword = !_showPassword;
-                      });
+            // Form Fields
+            Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  // Nama Field
+                  _buildTextField(
+                    controller: _namaController,
+                    label: 'Nama Lengkap',
+                    icon: Icons.person_outline,
+                    enabled: _isEditing,
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'Nama tidak boleh kosong';
+                      }
+                      if (value.trim().length < 2) {
+                        return 'Nama minimal 2 karakter';
+                      }
+                      return null;
                     },
                   ),
-                  validator: (value) {
-                    if (value != null && value.isNotEmpty && value.length < 6) {
-                      return 'Password minimal 6 karakter';
-                    }
-                    return null;
-                  },
-                ),
-              ],
+                  const SizedBox(height: 16),
 
-              if (_isEditing) ...[
-                const SizedBox(height: 24),
+                  // Email Field
+                  _buildTextField(
+                    controller: _emailController,
+                    label: 'Email',
+                    icon: Icons.email_outlined,
+                    enabled: _isEditing,
+                    keyboardType: TextInputType.emailAddress,
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'Email tidak boleh kosong';
+                      }
+                      if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                          .hasMatch(value.trim())) {
+                        return 'Format email tidak valid';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 16),
 
-                // Save Button
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed:
-                        pembeliProvider.isUpdatingProfile ? null : _saveProfile,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.pembeliColor,
-                      foregroundColor: AppColors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                  // Phone Field
+                  _buildTextField(
+                    controller: _teleponController,
+                    label: 'Nomor Telepon',
+                    icon: Icons.phone_outlined,
+                    enabled: _isEditing,
+                    keyboardType: TextInputType.phone,
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'Nomor telepon tidak boleh kosong';
+                      }
+                      if (value.trim().length < 10) {
+                        return 'Nomor telepon minimal 10 digit';
+                      }
+                      return null;
+                    },
+                  ),
+
+                  if (_isEditing) ...[
+                    const SizedBox(height: 16),
+                    // Password Field (only when editing)
+                    _buildTextField(
+                      controller: _passwordController,
+                      label: 'Password Baru (opsional)',
+                      icon: Icons.lock_outline,
+                      enabled: _isEditing,
+                      obscureText: !_showPassword,
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _showPassword
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                          color: AppColors.grey,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _showPassword = !_showPassword;
+                          });
+                        },
                       ),
+                      validator: (value) {
+                        if (value != null && value.isNotEmpty && value.length < 6) {
+                          return 'Password minimal 6 karakter';
+                        }
+                        return null;
+                      },
                     ),
-                    child: pembeliProvider.isUpdatingProfile
-                        ? const SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                  AppColors.white),
+                    const SizedBox(height: 24),
+
+                    // Save/Cancel Buttons
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: () {
+                              setState(() {
+                                _isEditing = false;
+                                _passwordController.clear();
+                                _loadUserData(); // Reset form
+                              });
+                            },
+                            style: OutlinedButton.styleFrom(
+                              side: const BorderSide(color: AppColors.grey),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              padding: const EdgeInsets.symmetric(vertical: 12),
                             ),
-                          )
-                        : const Text(
-                            'Simpan Perubahan',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
+                            child: const Text(
+                              'Batal',
+                              style: TextStyle(color: AppColors.grey),
                             ),
                           ),
-                  ),
-                ),
-              ],
-            ],
-          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: pembeliProvider.isUpdatingProfile
+                                ? null
+                                : () => _saveProfile(pembeliProvider),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.pembeliColor,
+                              foregroundColor: AppColors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                            ),
+                            child: pembeliProvider.isUpdatingProfile
+                                ? const SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: AppColors.white,
+                                    ),
+                                  )
+                                : const Text(
+                                    'Simpan',
+                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildLogoutCard(
-      AuthProvider authProvider, PembeliProvider pembeliProvider) {
+  Widget _buildMenuSection(BuildContext context) {
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(
@@ -440,7 +571,7 @@ class _ProfilePembeliState extends State<ProfilePembeli> {
               ),
             ),
             const SizedBox(height: 16),
-
+            
             // History Button
             SizedBox(
               width: double.infinity,
@@ -456,49 +587,50 @@ class _ProfilePembeliState extends State<ProfilePembeli> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.pembeliColor,
                   foregroundColor: AppColors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
+                  padding: const EdgeInsets.symmetric(vertical: 12),
                 ),
                 icon: const Icon(Icons.history),
                 label: const Text(
                   'History Pembelian',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 12),
-
-            // Logout Button
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: () =>
-                    _showLogoutDialog(context, authProvider, pembeliProvider),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.error,
-                  foregroundColor: AppColors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                icon: const Icon(Icons.logout),
-                label: const Text(
-                  'Logout',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLogoutCard(AuthProvider authProvider) {
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: SizedBox(
+          width: double.infinity,
+          child: ElevatedButton.icon(
+            onPressed: () => _showLogoutDialog(authProvider),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: AppColors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              padding: const EdgeInsets.symmetric(vertical: 12),
+            ),
+            icon: const Icon(Icons.logout),
+            label: const Text(
+              'Logout',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
         ),
       ),
     );
@@ -509,61 +641,73 @@ class _ProfilePembeliState extends State<ProfilePembeli> {
     required String label,
     required IconData icon,
     bool enabled = true,
-    TextInputType? keyboardType,
-    int maxLines = 1,
     bool obscureText = false,
-    Widget? suffixIcon,
+    TextInputType? keyboardType,
     String? Function(String?)? validator,
+    Widget? suffixIcon,
   }) {
-    return TextFormField(
-      controller: controller,
-      enabled: enabled,
-      keyboardType: keyboardType,
-      maxLines: maxLines,
-      obscureText: obscureText,
-      validator: validator,
-      decoration: InputDecoration(
-        labelText: label,
-        prefixIcon: Icon(icon, color: AppColors.pembeliColor),
-        suffixIcon: suffixIcon,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.grey),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            color: AppColors.greyDark,
+          ),
         ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.grey.withOpacity(0.5)),
+        const SizedBox(height: 8),
+        TextFormField(
+          controller: controller,
+          enabled: enabled,
+          obscureText: obscureText,
+          keyboardType: keyboardType,
+          validator: validator,
+          decoration: InputDecoration(
+            prefixIcon: Icon(icon, color: AppColors.grey),
+            suffixIcon: suffixIcon,
+            filled: true,
+            fillColor: enabled ? AppColors.white : AppColors.greyLight,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: AppColors.grey.withOpacity(0.3)),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: AppColors.grey.withOpacity(0.3)),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: AppColors.pembeliColor),
+            ),
+            disabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: AppColors.grey.withOpacity(0.2)),
+            ),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 12,
+            ),
+          ),
         ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.pembeliColor, width: 2),
-        ),
-        disabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.grey.withOpacity(0.3)),
-        ),
-        filled: !enabled,
-        fillColor: enabled ? null : AppColors.greyLight,
-      ),
+      ],
     );
   }
 
-  // ============= ACTION METHODS =============
+  void _saveProfile(PembeliProvider pembeliProvider) async {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
 
-  void _saveProfile() async {
-    if (_formKey.currentState!.validate()) {
-      final pembeliProvider =
-          Provider.of<PembeliProvider>(context, listen: false);
-
+    try {
       final success = await pembeliProvider.updateProfile(
         namaPembeli: _namaController.text.trim(),
         emailPembeli: _emailController.text.trim(),
-        noTelpPembeli: _teleponController.text.trim().isEmpty
-            ? null
-            : _teleponController.text.trim(),
-        passwordPembeli: _passwordController.text.trim().isEmpty
-            ? null
-            : _passwordController.text.trim(),
+        noTelpPembeli: _teleponController.text.trim(),
+        passwordPembeli: _passwordController.text.isNotEmpty
+            ? _passwordController.text
+            : null,
       );
 
       if (success) {
@@ -571,59 +715,78 @@ class _ProfilePembeliState extends State<ProfilePembeli> {
           _isEditing = false;
           _passwordController.clear();
         });
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Profile berhasil diperbarui'),
-            backgroundColor: AppColors.success,
-          ),
-        );
+        
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Profile berhasil diperbarui'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
       } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(pembeliProvider.errorMessage ?? 'Gagal memperbarui profile'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-                pembeliProvider.errorMessage ?? 'Gagal memperbarui profile'),
-            backgroundColor: AppColors.error,
+            content: Text('Error: $e'),
+            backgroundColor: Colors.red,
           ),
         );
       }
     }
   }
 
-  void _showLogoutDialog(BuildContext context, AuthProvider authProvider,
-      PembeliProvider pembeliProvider) {
+  void _showLogoutDialog(AuthProvider authProvider) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Konfirmasi Logout'),
-        content: const Text('Apakah Anda yakin ingin keluar dari aplikasi?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Batal'),
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
           ),
-          TextButton(
-            onPressed: () async {
-              Navigator.pop(context);
-
-              // Reset pembeli provider data
-              pembeliProvider.resetData();
-
-              await authProvider.logout();
-              if (context.mounted) {
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                  '/login',
-                  (route) => false,
-                );
-              }
-            },
-            child: const Text(
-              'Logout',
-              style: TextStyle(color: AppColors.error),
+          title: const Text('Konfirmasi Logout'),
+          content: const Text('Apakah Anda yakin ingin keluar dari aplikasi?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text(
+                'Batal',
+                style: TextStyle(color: AppColors.grey),
+              ),
             ),
-          ),
-        ],
-      ),
+            ElevatedButton(
+              onPressed: () async {
+                Navigator.of(context).pop();
+                await authProvider.logout();
+                if (mounted) {
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                    '/login',
+                    (route) => false,
+                  );
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: AppColors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: const Text('Logout'),
+            ),
+          ],
+        );
+      },
     );
   }
 }
