@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import '../../utils/colors.dart';
+import '../dashboards/profile_pembeli.dart';
 
 class PenukaranSuccessScreen extends StatelessWidget {
   final Map<String, dynamic> exchangeData;
@@ -17,7 +18,7 @@ class PenukaranSuccessScreen extends StatelessWidget {
       backgroundColor: AppColors.greyLight,
       appBar: AppBar(
         title: const Text('Penukaran Berhasil'),
-        backgroundColor: AppColors.primary,
+        backgroundColor: AppColors.pembeliColor,
         foregroundColor: AppColors.white,
         elevation: 0,
         automaticallyImplyLeading: false, // Remove back button
@@ -64,7 +65,7 @@ class PenukaranSuccessScreen extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
-                      color: AppColors.primary,
+                      color: AppColors.pembeliColor,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -109,7 +110,7 @@ class PenukaranSuccessScreen extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
-                      color: AppColors.primary,
+                      color: AppColors.pembeliColor,
                     ),
                   ),
                   
@@ -144,7 +145,7 @@ class PenukaranSuccessScreen extends StatelessWidget {
                             style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w700,
-                              color: AppColors.primary,
+                              color: AppColors.pembeliColor,
                             ),
                           ),
                         ],
@@ -180,7 +181,7 @@ class PenukaranSuccessScreen extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
-                      color: AppColors.primary,
+                      color: AppColors.pembeliColor,
                     ),
                   ),
                   
@@ -192,7 +193,7 @@ class PenukaranSuccessScreen extends StatelessWidget {
                   const SizedBox(height: 8),
                   const Divider(),
                   const SizedBox(height: 8),
-                  _buildPointRow('Poin Sekarang', _getPointsAfter(), AppColors.primary, isBold: true),
+                  _buildPointRow('Poin Sekarang', _getPointsAfter(), AppColors.pembeliColor, isBold: true),
                 ],
               ),
             ),
@@ -222,7 +223,7 @@ class PenukaranSuccessScreen extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
-                      color: AppColors.primary,
+                      color: AppColors.pembeliColor,
                     ),
                   ),
                   
@@ -242,10 +243,16 @@ class PenukaranSuccessScreen extends StatelessWidget {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.popUntil(context, (route) => route.isFirst);
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ProfilePembeli(),
+                        ),
+                        (route) => route.settings.name == '/pembeli-dashboard',
+                      );
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
+                      backgroundColor: AppColors.pembeliColor,
                       foregroundColor: AppColors.white,
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
@@ -418,7 +425,7 @@ class PenukaranSuccessScreen extends StatelessWidget {
                 '${item['subtotal'] ?? 0} Poin',
                 style: const TextStyle(
                   fontWeight: FontWeight.w600,
-                  color: AppColors.primary,
+                  color: AppColors.pembeliColor,
                   fontSize: 14,
                 ),
               ),

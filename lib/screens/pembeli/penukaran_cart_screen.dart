@@ -157,7 +157,7 @@ class _PenukaranCartScreenState extends State<PenukaranCartScreen> {
                     '$_totalPoints Poin',
                     style: const TextStyle(
                       fontWeight: FontWeight.w600,
-                      color: AppColors.primary,
+                      color: AppColors.pembeliColor,
                     ),
                   ),
                 ],
@@ -181,7 +181,7 @@ class _PenukaranCartScreenState extends State<PenukaranCartScreen> {
           ElevatedButton(
             onPressed: () => Navigator.pop(context, true),
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
+              backgroundColor: AppColors.pembeliColor,
               foregroundColor: AppColors.white,
             ),
             child: const Text('Konfirmasi'),
@@ -227,7 +227,7 @@ class _PenukaranCartScreenState extends State<PenukaranCartScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Keranjang Penukaran'),
-        backgroundColor: AppColors.primary,
+        backgroundColor: AppColors.pembeliColor,
         foregroundColor: AppColors.white,
         elevation: 0,
       ),
@@ -271,9 +271,9 @@ class _PenukaranCartScreenState extends State<PenukaranCartScreen> {
           margin: const EdgeInsets.all(16),
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: AppColors.primary.withOpacity(0.1),
+            color: AppColors.pembeliColor.withOpacity(0.1),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+            border: Border.all(color: AppColors.pembeliColor.withOpacity(0.3)),
           ),
           child: Consumer<AuthProvider>(
             builder: (context, authProvider, child) {
@@ -313,7 +313,7 @@ class _PenukaranCartScreenState extends State<PenukaranCartScreen> {
                         '$_totalPoints Poin',
                         style: const TextStyle(
                           fontWeight: FontWeight.w600,
-                          color: AppColors.primary,
+                          color: AppColors.pembeliColor,
                         ),
                       ),
                     ],
@@ -330,7 +330,7 @@ class _PenukaranCartScreenState extends State<PenukaranCartScreen> {
                         '${userPoints - _totalPoints} Poin',
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
-                          color: canAfford ? AppColors.primary : Colors.red,
+                          color: canAfford ? AppColors.pembeliColor : Colors.red,
                         ),
                       ),
                     ],
@@ -452,7 +452,7 @@ class _PenukaranCartScreenState extends State<PenukaranCartScreen> {
                     'Subtotal: $subtotal Poin',
                     style: const TextStyle(
                       fontWeight: FontWeight.w600,
-                      color: AppColors.primary,
+                      color: AppColors.pembeliColor,
                       fontSize: 13,
                     ),
                   ),
@@ -489,7 +489,7 @@ class _PenukaranCartScreenState extends State<PenukaranCartScreen> {
                           : null,
                       icon: Icon(
                         Icons.add_circle,
-                        color: quantity < merchandise.stok ? AppColors.primary : AppColors.grey,
+                        color: quantity < merchandise.stok ? AppColors.pembeliColor : AppColors.grey,
                       ),
                       constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
                       padding: EdgeInsets.zero,
@@ -550,7 +550,7 @@ class _PenukaranCartScreenState extends State<PenukaranCartScreen> {
                           style: const TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: 18,
-                            color: AppColors.primary,
+                            color: AppColors.pembeliColor,
                           ),
                         ),
                       ],
@@ -558,7 +558,7 @@ class _PenukaranCartScreenState extends State<PenukaranCartScreen> {
                     ElevatedButton(
                       onPressed: canAfford ? _processExchange : null,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: canAfford ? AppColors.primary : AppColors.grey,
+                        backgroundColor: canAfford ? AppColors.pembeliColor : AppColors.grey,
                         foregroundColor: AppColors.white,
                         padding: const EdgeInsets.symmetric(
                           horizontal: 32,

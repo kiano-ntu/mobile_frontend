@@ -66,7 +66,7 @@ class _MerchandiseCatalogScreenState extends State<MerchandiseCatalogScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('${_truncateName(merchandise.namaMerch)} ditambahkan ke keranjang'),
-          backgroundColor: AppColors.primary,
+          backgroundColor: AppColors.pembeliColor,
           duration: const Duration(seconds: 2),
         ),
       );
@@ -118,7 +118,7 @@ class _MerchandiseCatalogScreenState extends State<MerchandiseCatalogScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Katalog Merchandise'),
-        backgroundColor: AppColors.primary,
+        backgroundColor: AppColors.pembeliColor,
         foregroundColor: AppColors.white,
         elevation: 0,
         actions: [
@@ -177,7 +177,7 @@ class _MerchandiseCatalogScreenState extends State<MerchandiseCatalogScreen> {
               ),
             );
           },
-          backgroundColor: canAffordCart ? AppColors.primary : Colors.red,
+          backgroundColor: canAffordCart ? AppColors.pembeliColor : Colors.red,
           foregroundColor: AppColors.white,
           icon: const Icon(Icons.shopping_cart),
           label: Text('$_totalCartItems item${_totalCartItems > 1 ? 's' : ''}\n$_totalCartPoints poin'),
@@ -250,8 +250,8 @@ class _MerchandiseCatalogScreenState extends State<MerchandiseCatalogScreen> {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    AppColors.primary,
-                    AppColors.primary.withOpacity(0.8),
+                    AppColors.pembeliColor,
+                    AppColors.pembeliColor.withOpacity(0.8),
                   ],
                 ),
               ),
@@ -323,7 +323,7 @@ class _MerchandiseCatalogScreenState extends State<MerchandiseCatalogScreen> {
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
-                      color: AppColors.primary,
+                      color: AppColors.pembeliColor,
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -462,7 +462,7 @@ class _MerchandiseCatalogScreenState extends State<MerchandiseCatalogScreen> {
                           style: const TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: 11, // Reduced from 12 to 11
-                            color: AppColors.primary,
+                            color: AppColors.pembeliColor,
                             height: 1.1, // Reduced line height
                           ),
                           maxLines: 2,
@@ -481,7 +481,7 @@ class _MerchandiseCatalogScreenState extends State<MerchandiseCatalogScreen> {
                             '${merchandise.hargaPoin} Poin',
                             style: TextStyle(
                               fontWeight: FontWeight.w600,
-                              color: canAfford ? AppColors.primary : Colors.red,
+                              color: canAfford ? AppColors.pembeliColor : Colors.red,
                               fontSize: 10, // Reduced from 11 to 10
                             ),
                           ),
@@ -501,7 +501,7 @@ class _MerchandiseCatalogScreenState extends State<MerchandiseCatalogScreen> {
                               : null,
                             style: ElevatedButton.styleFrom(
                               backgroundColor: isAvailable && canAfford
-                                  ? AppColors.primary
+                                  ? AppColors.pembeliColor
                                   : Colors.grey,
                               foregroundColor: Colors.white,
                               elevation: 0,
@@ -527,7 +527,7 @@ class _MerchandiseCatalogScreenState extends State<MerchandiseCatalogScreen> {
                         Container(
                           height: 24, // Reduced from 28 to 24
                           decoration: BoxDecoration(
-                            border: Border.all(color: AppColors.primary),
+                            border: Border.all(color: AppColors.pembeliColor),
                             borderRadius: BorderRadius.circular(6),
                           ),
                           child: Row(
@@ -567,7 +567,7 @@ class _MerchandiseCatalogScreenState extends State<MerchandiseCatalogScreen> {
                                       style: const TextStyle(
                                         fontWeight: FontWeight.w600,
                                         fontSize: 11, // Reduced from 12 to 11
-                                        color: AppColors.primary,
+                                        color: AppColors.pembeliColor,
                                       ),
                                     ),
                                   ),
@@ -586,7 +586,7 @@ class _MerchandiseCatalogScreenState extends State<MerchandiseCatalogScreen> {
                                     height: 22, // Reduced from 26 to 22
                                     decoration: BoxDecoration(
                                       color: cartQuantity < merchandise.stok
-                                          ? AppColors.primary
+                                          ? AppColors.pembeliColor
                                           : Colors.grey,
                                       borderRadius: const BorderRadius.only(
                                         topRight: Radius.circular(5),

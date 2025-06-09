@@ -25,36 +25,6 @@ class PembeliDashboard extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            actions: [
-              // Points display
-              Container(
-                margin: const EdgeInsets.all(8),
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: AppColors.white.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(
-                      Icons.stars,
-                      size: 16,
-                      color: AppColors.accent,
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      '3750 Poin', // You can make this dynamic from provider
-                      style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.white,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
           ),
           body: RefreshIndicator(
             onRefresh: () async {

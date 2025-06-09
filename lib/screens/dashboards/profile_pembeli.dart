@@ -1,5 +1,7 @@
 // File: lib/screens/dashboards/profile_pembeli.dart - COMPLETE VERSION
 
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
@@ -142,7 +144,6 @@ class _ProfilePembeliState extends State<ProfilePembeli> {
 
                           const SizedBox(height: 20),
 
-                          // NEW: Tukar Poin Section (moved from dashboard)
                           _buildTukarPoinSection(context),
 
                           const SizedBox(height: 20),
@@ -263,15 +264,15 @@ class _ProfilePembeliState extends State<ProfilePembeli> {
     );
   }
 
-  // NEW: Tukar Poin Section (moved from dashboard)
-  Widget _buildTukarPoinSection(BuildContext context) {
+  Widget _buildTukarPoinSection(BuildContext context){
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
       ),
+
       child: InkWell(
-        onTap: () {
+        onTap: (){
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -279,6 +280,7 @@ class _ProfilePembeliState extends State<ProfilePembeli> {
             ),
           );
         },
+
         borderRadius: BorderRadius.circular(16),
         child: Container(
           width: double.infinity,
@@ -292,8 +294,10 @@ class _ProfilePembeliState extends State<ProfilePembeli> {
                 AppColors.accent,
               ],
             ),
+
             borderRadius: BorderRadius.circular(16),
           ),
+          
           child: Row(
             children: [
               Container(
@@ -302,12 +306,14 @@ class _ProfilePembeliState extends State<ProfilePembeli> {
                   color: AppColors.white.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(12),
                 ),
+
                 child: const Icon(
                   Icons.card_giftcard,
                   color: AppColors.white,
                   size: 28,
                 ),
               ),
+
               const SizedBox(width: 16),
               Expanded(
                 child: Column(
@@ -321,6 +327,7 @@ class _ProfilePembeliState extends State<ProfilePembeli> {
                         color: AppColors.white,
                       ),
                     ),
+
                     const SizedBox(height: 4),
                     Text(
                       'Dapatkan merchandise eksklusif dengan poin Anda',
@@ -329,36 +336,12 @@ class _ProfilePembeliState extends State<ProfilePembeli> {
                         color: AppColors.white.withOpacity(0.9),
                       ),
                     ),
+
                     const SizedBox(height: 8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: AppColors.white.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(
-                            Icons.stars,
-                            size: 14,
-                            color: AppColors.white,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            '3750 Poin Tersedia',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: AppColors.white,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
                   ],
                 ),
               ),
+              
               const Icon(
                 Icons.arrow_forward_ios,
                 color: AppColors.white,
