@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../utils/colors.dart';
+import '../dashboards/profile_pembeli.dart'; // Import halaman profile pembeli
 
 class PembeliDashboard extends StatelessWidget {
   const PembeliDashboard({Key? key}) : super(key: key);
@@ -51,23 +52,49 @@ class PembeliDashboard extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Icon Pembeli
-                  Container(
-                    width: 80,
-                    height: 80,
-                    decoration: BoxDecoration(
-                      color: AppColors.pembeliColor.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(40),
-                    ),
-                    child: const Icon(
-                      Icons.person,
-                      size: 40,
-                      color: AppColors.pembeliColor,
+                  // Tombol Profile Pembeli (sebelumnya hanya Icon)
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ProfilePembeli(),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      width: 80,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        color: AppColors.pembeliColor.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(40),
+                        border: Border.all(
+                          color: AppColors.pembeliColor.withOpacity(0.3),
+                          width: 2,
+                        ),
+                      ),
+                      child: const Icon(
+                        Icons.person,
+                        size: 40,
+                        color: AppColors.pembeliColor,
+                      ),
                     ),
                   ),
-                  
-                  const SizedBox(height: 24),
-                  
+
+                  const SizedBox(height: 8),
+
+                  // Label untuk tombol profile
+                  Text(
+                    'Lihat Profile',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: AppColors.pembeliColor,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+
+                  const SizedBox(height: 16),
+
                   // Greeting Text
                   Text(
                     'Halo ${authProvider.userName ?? 'Pembeli'}!',
@@ -78,9 +105,9 @@ class PembeliDashboard extends StatelessWidget {
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  
+
                   const SizedBox(height: 16),
-                  
+
                   // Role Text
                   Container(
                     padding: const EdgeInsets.symmetric(
@@ -100,9 +127,9 @@ class PembeliDashboard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  
+
                   const SizedBox(height: 24),
-                  
+
                   // Welcome Message
                   Text(
                     'Selamat datang di ReUseMart!\nSiap berbelanja barang bekas berkualitas?',
