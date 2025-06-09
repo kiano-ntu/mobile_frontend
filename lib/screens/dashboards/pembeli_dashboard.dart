@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../utils/colors.dart';
 import '../merchandise/merchandise_catalog_screen.dart';
+import '../dashboards/profile_pembeli.dart'; // Import halaman profile pembeli
 
 class PembeliDashboard extends StatelessWidget {
   const PembeliDashboard({Key? key}) : super(key: key);
@@ -159,6 +160,94 @@ class PembeliDashboard extends StatelessWidget {
 
                   // Points Summary Card
                   _buildPointsSummaryCard(authProvider),
+                  // Tombol Profile Pembeli (sebelumnya hanya Icon)
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ProfilePembeli(),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      width: 80,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        color: AppColors.pembeliColor.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(40),
+                        border: Border.all(
+                          color: AppColors.pembeliColor.withOpacity(0.3),
+                          width: 2,
+                        ),
+                      ),
+                      child: const Icon(
+                        Icons.person,
+                        size: 40,
+                        color: AppColors.pembeliColor,
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 8),
+
+                  // Label untuk tombol profile
+                  Text(
+                    'Lihat Profile',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: AppColors.pembeliColor,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  // Greeting Text
+                  Text(
+                    'Halo ${authProvider.userName ?? 'Pembeli'}!',
+                    style: const TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.greyDark,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  // Role Text
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 8,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.pembeliColor,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: const Text(
+                      'Pembeli',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.white,
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  // Welcome Message
+                  Text(
+                    'Selamat datang di ReUseMart!\nSiap berbelanja barang bekas berkualitas?',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: AppColors.grey,
+                      height: 1.5,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
                 ],
               ),
             ),

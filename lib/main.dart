@@ -7,6 +7,9 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'utils/routes.dart';
 import 'providers/auth_provider.dart';
+import 'providers/kurir_provider.dart'; // ⭐ TAMBAHAN INI
+import 'providers/pembeli_provider.dart';
+import 'providers/history_provider.dart';
 import 'services/enhanced_firebase_service.dart';
 import 'services/storage_service.dart';
 import 'utils/colors.dart';
@@ -14,10 +17,10 @@ import 'utils/colors.dart';
 void main() async {
   // Ensure Flutter binding is initialized
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   // Initialize storage service
   await StorageService.init();
-  
+
   // Set system UI overlay style
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
@@ -29,7 +32,7 @@ void main() async {
 
   // Global navigation key for Firebase notifications
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-  
+
   try {
     // Initialize Enhanced Firebase Notification Service
     await EnhancedFirebaseNotificationService.initialize(navKey: navigatorKey);
@@ -44,9 +47,9 @@ void main() async {
 
 class ReUseMartApp extends StatelessWidget {
   final GlobalKey<NavigatorState> navigatorKey;
-  
+
   const ReUseMartApp({
-    Key? key, 
+    Key? key,
     required this.navigatorKey,
   }) : super(key: key);
 
@@ -57,19 +60,31 @@ class ReUseMartApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => AuthProvider(),
         ),
+        ChangeNotifierProvider(
+          // ⭐ TAMBAHAN INI
+          create: (_) => KurirProvider(),
+        ),
+        ChangeNotifierProvider(
+          // ⭐ TAMBAHAN INI
+          create: (_) => PembeliProvider(),
+        ),
+        ChangeNotifierProvider(
+          // ⭐ TAMBAHAN INI
+          create: (_) => HistoryProvider(),
+        ),
         // Add other providers here if needed
       ],
       child: MaterialApp(
         // App Configuration
         title: 'ReUseMart',
         debugShowCheckedModeBanner: false,
-        
+
         // Navigation
         navigatorKey: navigatorKey,
         initialRoute: AppRoutes.splash,
         routes: AppRoutes.routes,
         onGenerateRoute: AppRoutes.generateRoute,
-        
+
         // Theme Configuration
         theme: ThemeData(
           // Primary Color Scheme
@@ -79,12 +94,12 @@ class ReUseMartApp extends StatelessWidget {
             seedColor: AppColors.primary,
             brightness: Brightness.light,
           ),
-          
+
           // Typography
           textTheme: GoogleFonts.interTextTheme(
             Theme.of(context).textTheme,
           ),
-          
+
           // AppBar Theme
           appBarTheme: const AppBarTheme(
             elevation: 0,
@@ -96,7 +111,7 @@ class ReUseMartApp extends StatelessWidget {
               statusBarIconBrightness: Brightness.light,
             ),
           ),
-          
+
           // Button Themes
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ElevatedButton.styleFrom(
@@ -113,7 +128,7 @@ class ReUseMartApp extends StatelessWidget {
               ),
             ),
           ),
-          
+
           outlinedButtonTheme: OutlinedButtonThemeData(
             style: OutlinedButton.styleFrom(
               foregroundColor: AppColors.primary,
@@ -130,7 +145,7 @@ class ReUseMartApp extends StatelessWidget {
               ),
             ),
           ),
-          
+
           // Input Decoration Theme
           inputDecorationTheme: InputDecorationTheme(
             filled: true,
@@ -175,7 +190,7 @@ class ReUseMartApp extends StatelessWidget {
               ),
             ),
           ),
-          
+
           // Card Theme
           cardTheme: CardThemeData(
             elevation: 2,
@@ -185,7 +200,7 @@ class ReUseMartApp extends StatelessWidget {
             ),
             color: AppColors.white,
           ),
-          
+
           // Bottom Navigation Bar Theme
           bottomNavigationBarTheme: const BottomNavigationBarThemeData(
             backgroundColor: AppColors.white,
@@ -194,7 +209,7 @@ class ReUseMartApp extends StatelessWidget {
             type: BottomNavigationBarType.fixed,
             elevation: 8,
           ),
-          
+
           // Dialog Theme
           dialogTheme: const DialogThemeData(
             backgroundColor: AppColors.white,
@@ -203,21 +218,21 @@ class ReUseMartApp extends StatelessWidget {
               borderRadius: BorderRadius.all(Radius.circular(16)),
             ),
           ),
-          
+
           // Scaffold Background
           scaffoldBackgroundColor: AppColors.greyLight,
-          
+
           // Divider Theme
           dividerTheme: const DividerThemeData(
             color: AppColors.greyLight,
             thickness: 1,
           ),
-          
+
           // Progress Indicator Theme
           progressIndicatorTheme: const ProgressIndicatorThemeData(
             color: AppColors.primary,
           ),
-          
+
           // Snackbar Theme
           snackBarTheme: SnackBarThemeData(
             backgroundColor: AppColors.greyDark,
@@ -230,7 +245,7 @@ class ReUseMartApp extends StatelessWidget {
             ),
             behavior: SnackBarBehavior.floating,
           ),
-          
+
           // Switch Theme
           switchTheme: SwitchThemeData(
             thumbColor: MaterialStateProperty.resolveWith((states) {
@@ -246,7 +261,7 @@ class ReUseMartApp extends StatelessWidget {
               return AppColors.greyLight;
             }),
           ),
-          
+
           // Checkbox Theme
           checkboxTheme: CheckboxThemeData(
             fillColor: MaterialStateProperty.resolveWith((states) {
@@ -264,7 +279,7 @@ class ReUseMartApp extends StatelessWidget {
               borderRadius: BorderRadius.circular(4),
             ),
           ),
-          
+
           // Radio Theme
           radioTheme: RadioThemeData(
             fillColor: MaterialStateProperty.resolveWith((states) {
@@ -274,14 +289,14 @@ class ReUseMartApp extends StatelessWidget {
               return AppColors.grey;
             }),
           ),
-          
+
           // Floating Action Button Theme
           floatingActionButtonTheme: const FloatingActionButtonThemeData(
             backgroundColor: AppColors.primary,
             foregroundColor: AppColors.white,
             elevation: 4,
           ),
-          
+
           // Tab Bar Theme
           tabBarTheme: const TabBarThemeData(
             labelColor: AppColors.primary,
@@ -289,32 +304,32 @@ class ReUseMartApp extends StatelessWidget {
             indicatorColor: AppColors.primary,
             indicatorSize: TabBarIndicatorSize.label,
           ),
-          
+
           // List Tile Theme
           listTileTheme: const ListTileThemeData(
             contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             minLeadingWidth: 24,
           ),
-          
+
           // Icon Theme
           iconTheme: const IconThemeData(
             color: AppColors.grey,
             size: 24,
           ),
-          
+
           // Primary Icon Theme
           primaryIconTheme: const IconThemeData(
             color: AppColors.white,
             size: 24,
           ),
-          
+
           // Text Selection Theme
           textSelectionTheme: const TextSelectionThemeData(
             cursorColor: AppColors.primary,
             selectionColor: AppColors.primaryLight,
             selectionHandleColor: AppColors.primary,
           ),
-          
+
           // Tooltip Theme
           tooltipTheme: TooltipThemeData(
             decoration: BoxDecoration(
@@ -326,7 +341,7 @@ class ReUseMartApp extends StatelessWidget {
               fontSize: 12,
             ),
           ),
-          
+
           // Chip Theme
           chipTheme: ChipThemeData(
             backgroundColor: AppColors.greyLight,
@@ -344,7 +359,7 @@ class ReUseMartApp extends StatelessWidget {
               borderRadius: BorderRadius.circular(20),
             ),
           ),
-          
+
           // Banner Theme
           bannerTheme: const MaterialBannerThemeData(
             backgroundColor: AppColors.accent,
@@ -353,7 +368,7 @@ class ReUseMartApp extends StatelessWidget {
               fontSize: 14,
             ),
           ),
-          
+
           // Bottom Sheet Theme
           bottomSheetTheme: const BottomSheetThemeData(
             backgroundColor: AppColors.white,
@@ -365,7 +380,7 @@ class ReUseMartApp extends StatelessWidget {
               ),
             ),
           ),
-          
+
           // Data Table Theme
           dataTableTheme: DataTableThemeData(
             headingRowColor: MaterialStateProperty.all(AppColors.greyLight),
@@ -375,7 +390,7 @@ class ReUseMartApp extends StatelessWidget {
             horizontalMargin: 16,
             checkboxHorizontalMargin: 12,
           ),
-          
+
           // Time Picker Theme
           timePickerTheme: TimePickerThemeData(
             backgroundColor: AppColors.white,
@@ -391,7 +406,7 @@ class ReUseMartApp extends StatelessWidget {
               borderRadius: BorderRadius.circular(16),
             ),
           ),
-          
+
           // Date Picker Theme
           datePickerTheme: DatePickerThemeData(
             backgroundColor: AppColors.white,
@@ -431,7 +446,7 @@ class ReUseMartApp extends StatelessWidget {
               borderRadius: BorderRadius.circular(16),
             ),
           ),
-          
+
           // Slider Theme
           sliderTheme: SliderThemeData(
             activeTrackColor: AppColors.primary,
@@ -444,7 +459,7 @@ class ReUseMartApp extends StatelessWidget {
               fontSize: 12,
             ),
           ),
-          
+
           // Navigation Rail Theme
           navigationRailTheme: NavigationRailThemeData(
             backgroundColor: AppColors.white,
@@ -468,7 +483,7 @@ class ReUseMartApp extends StatelessWidget {
             ),
             indicatorColor: AppColors.primary.withOpacity(0.1),
           ),
-          
+
           // Search Bar Theme
           searchBarTheme: SearchBarThemeData(
             backgroundColor: MaterialStateProperty.all(AppColors.white),
@@ -499,7 +514,7 @@ class ReUseMartApp extends StatelessWidget {
               ),
             ),
           ),
-          
+
           // Search View Theme
           searchViewTheme: SearchViewThemeData(
             backgroundColor: AppColors.white,
@@ -518,7 +533,7 @@ class ReUseMartApp extends StatelessWidget {
             ),
           ),
         ),
-        
+
         // Builder for global app configuration
         builder: (context, child) {
           return NotificationListener<OverscrollIndicatorNotification>(
@@ -542,7 +557,7 @@ class ReUseMartApp extends StatelessWidget {
     for (int i = 1; i < 10; i++) {
       strengths.add(0.1 * i);
     }
-    
+
     for (double strength in strengths) {
       final double ds = 0.5 - strength;
       swatch[(strength * 1000).round()] = Color.fromRGBO(
@@ -552,7 +567,7 @@ class ReUseMartApp extends StatelessWidget {
         1,
       );
     }
-    
+
     return MaterialColor(color.value, swatch);
   }
 }
