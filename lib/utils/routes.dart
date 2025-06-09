@@ -1,4 +1,4 @@
-// File: lib/utils/routes.dart - UPDATE YOUR EXISTING FILE
+// File: lib/utils/routes.dart
 
 import 'package:flutter/material.dart';
 import '../screens/auth/splash_screen.dart';
@@ -8,7 +8,7 @@ import '../screens/dashboards/pembeli_dashboard.dart';
 import '../screens/dashboards/penitip_dashboard.dart';
 import '../screens/dashboards/kurir_dashboard.dart';
 import '../screens/dashboards/hunter_dashboard.dart';
-// ADD THESE NEW IMPORTS
+import '../screens/hunter/hunter_profile_screen.dart';
 import '../screens/merchandise/merchandise_catalog_screen.dart';
 import '../screens/merchandise/merchandise_detail_screen.dart';
 import '../models/merchandise.dart';
@@ -22,8 +22,8 @@ class AppRoutes {
   static const String penitipDashboard = '/penitip-dashboard';
   static const String kurirDashboard = '/kurir-dashboard';
   static const String hunterDashboard = '/hunter-dashboard';
-  
-  // ADD THESE NEW MERCHANDISE ROUTES
+  static const String hunterProfile = '/hunter/profile';
+  static const String hunterKomisiDetail = '/hunter/komisi-detail';
   static const String merchandiseCatalog = '/merchandise-catalog';
   static const String merchandiseDetail = '/merchandise-detail';
 
@@ -36,8 +36,7 @@ class AppRoutes {
     penitipDashboard: (context) => const PenitipDashboard(),
     kurirDashboard: (context) => const KurirDashboard(),
     hunterDashboard: (context) => const HunterDashboard(),
-    
-    // ADD THIS NEW MERCHANDISE ROUTE
+    hunterProfile: (context) => const HunterProfileScreen(),
     merchandiseCatalog: (context) => const MerchandiseCatalogScreen(),
   };
 
@@ -73,7 +72,7 @@ class AppRoutes {
           builder: (context) => const PenitipDashboard(),
           settings: settings,
         );
-        
+   
       case kurirDashboard:
         return MaterialPageRoute(
           builder: (context) => const KurirDashboard(),
@@ -86,7 +85,12 @@ class AppRoutes {
           settings: settings,
         );
         
-      // ADD THESE NEW MERCHANDISE ROUTES
+      case hunterProfile:
+        return MaterialPageRoute(
+          builder: (context) => const HunterProfileScreen(),
+          settings: settings,
+        );
+        
       case merchandiseCatalog:
         return MaterialPageRoute(
           builder: (context) => const MerchandiseCatalogScreen(),
@@ -94,7 +98,6 @@ class AppRoutes {
         );
         
       case merchandiseDetail:
-        // Handle merchandise detail with arguments
         if (settings.arguments is Merchandise) {
           return MaterialPageRoute(
             builder: (context) => MerchandiseDetailScreen(
@@ -117,7 +120,6 @@ class AppRoutes {
   }
 }
 
-// 404 Screen untuk route yang tidak ditemukan
 class NotFoundScreen extends StatelessWidget {
   const NotFoundScreen({Key? key}) : super(key: key);
 
