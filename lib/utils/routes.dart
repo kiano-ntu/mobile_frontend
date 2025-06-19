@@ -21,14 +21,14 @@ class AppRoutes {
 
   // Static Routes Map
   static Map<String, WidgetBuilder> get routes => {
-    splash: (context) => const SplashScreen(),
-    home: (context) => const HomeScreen(),
-    login: (context) => const LoginScreen(),
-    pembeliDashboard: (context) => const PembeliDashboard(),
-    penitipDashboard: (context) => const PenitipDashboard(),
-    kurirDashboard: (context) => const KurirDashboard(),
-    hunterDashboard: (context) => const HunterDashboard(),
-  };
+        splash: (context) => const SplashScreen(),
+        home: (context) => const HomeScreen(),
+        login: (context) => const LoginScreen(),
+        pembeliDashboard: (context) => const PembeliDashboard(),
+        penitipDashboard: (context) => const PenitipDashboard(),
+        kurirDashboard: (context) => const KurirDashboard(),
+        hunterDashboard: (context) => const HunterDashboard(),
+      };
 
   // Dynamic Route Generator
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -38,37 +38,37 @@ class AppRoutes {
           builder: (context) => const SplashScreen(),
           settings: settings,
         );
-        
+
       case login:
         return MaterialPageRoute(
           builder: (context) => const LoginScreen(),
           settings: settings,
         );
-        
+
       case pembeliDashboard:
         return MaterialPageRoute(
           builder: (context) => const PembeliDashboard(),
           settings: settings,
         );
-        
+
       case penitipDashboard:
         return MaterialPageRoute(
           builder: (context) => const PenitipDashboard(),
           settings: settings,
         );
-        
+
       case kurirDashboard:
         return MaterialPageRoute(
           builder: (context) => const KurirDashboard(),
           settings: settings,
         );
-        
+
       case hunterDashboard:
         return MaterialPageRoute(
           builder: (context) => const HunterDashboard(),
           settings: settings,
         );
-        
+
       default:
         return MaterialPageRoute(
           builder: (context) => const NotFoundScreen(),

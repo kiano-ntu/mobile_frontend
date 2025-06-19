@@ -10,6 +10,9 @@ import 'providers/auth_provider.dart';
 import 'providers/kurir_provider.dart'; // ⭐ TAMBAHAN INI
 import 'providers/pembeli_provider.dart';
 import 'providers/history_provider.dart';
+import 'providers/penitip_provider.dart';
+import 'providers/penitip_history_provider.dart';
+import 'providers/top_seller_provider.dart';
 import 'services/enhanced_firebase_service.dart';
 import 'services/storage_service.dart';
 import 'utils/colors.dart';
@@ -71,6 +74,18 @@ class ReUseMartApp extends StatelessWidget {
         ChangeNotifierProvider(
           // ⭐ TAMBAHAN INI
           create: (_) => HistoryProvider(),
+        ),
+        ChangeNotifierProvider(
+          // ⭐ TAMBAHAN INI
+          create: (_) => PenitipProvider(),
+        ),
+        ChangeNotifierProvider(
+          // ⭐ TAMBAHAN INI
+          create: (_) => PenitipHistoryProvider(),
+        ),
+        ChangeNotifierProvider(
+          // ⭐ TAMBAHAN INI - TOP SELLER PROVIDER
+          create: (_) => TopSellerProvider(),
         ),
         // Add other providers here if needed
       ],

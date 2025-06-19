@@ -2,7 +2,7 @@ class AppConfig {
   // ============= LARAVEL BACKEND CONFIGURATION =============
 
   // Menggunakan IP address komputer Anda
-  static const String baseUrl = 'http://10.10.10.230:8000';
+  static const String baseUrl = 'http://192.168.18.55:8000';
 
   // Alternatif URL untuk testing berbeda platform:
   // static const String baseUrl = 'http://10.0.2.2:8000';        // Untuk Android Emulator
@@ -54,6 +54,25 @@ class AppConfig {
 
   static const String pembeliMobileHistoryEndpoint =
       '$pembeliMobileEndpoint/history';
+
+  // PENITIP MOBILE ENDPOINTS
+  static const String penitipMobileEndpoint = '$mobileApiUrl/penitip';
+  static const String penitipMobileProfileEndpoint =
+      '$penitipMobileEndpoint/profil';
+  static const String penitipMobileUpdateEndpoint =
+      '$penitipMobileEndpoint/profil/update';
+  static const String penitipMobileDashboardEndpoint =
+      '$penitipMobileEndpoint/dashboard';
+  static const String penitipMobileProdukEndpoint =
+      '$penitipMobileEndpoint/produk';
+  static const String penitipMobileTransaksiEndpoint =
+      '$penitipMobileEndpoint/transaksi';
+  static const String penitipMobileIncomeEndpoint =
+      '$penitipMobileEndpoint/income';
+  static const String penitipMobilePointsEndpoint =
+      '$penitipMobileEndpoint/points';
+  static const String penitipMobileLogoutEndpoint =
+      '$penitipMobileEndpoint/logout';
 
   // ============= LOCAL STORAGE KEYS =============
   static const String authTokenKey = 'auth_token';
