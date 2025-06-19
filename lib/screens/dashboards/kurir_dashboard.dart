@@ -1,4 +1,4 @@
-// File: lib/screens/dashboards/kurir_dashboard.dart - FIXED OVERFLOW VERSION
+// File: lib/screens/dashboards/kurir_dashboard.dart - WITH STATUS FILTER
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -8,6 +8,8 @@ import '../../models/delivery_task.dart';
 import '../../utils/colors.dart';
 import '../../widgets/loading_widget.dart';
 import '../../widgets/custom_button.dart';
+
+enum TaskStatus { all, inProgress, completed }
 
 class KurirDashboard extends StatefulWidget {
   const KurirDashboard({Key? key}) : super(key: key);
@@ -20,6 +22,9 @@ class _KurirDashboardState extends State<KurirDashboard>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   bool _hasLoadedData = false;
+  
+  // ⭐ FILTER STATE
+  TaskStatus _currentFilter = TaskStatus.all;
   
   @override
   void initState() {
@@ -54,6 +59,63 @@ class _KurirDashboardState extends State<KurirDashboard>
   void dispose() {
     _tabController.dispose();
     super.dispose();
+  }
+
+  // ⭐ FILTER LOGIC
+  List<DeliveryTask> _getFilteredTasks(List<DeliveryTask> allTasks) {
+    switch (_currentFilter) {
+      case TaskStatus.inProgress:
+        return allTasks.where((task) => 
+          task.status == 'Dikirim' || 
+          task.status == 'Diproses' ||
+          task.status == 'Siap Kirim'
+        ).toList();
+        
+      case TaskStatus.completed:
+        return allTasks.where((task) => 
+          task.status == 'Selesai'
+        ).toList();
+        
+      case TaskStatus.all:
+      default:
+        return allTasks;
+    }
+  }
+
+  String _getFilterDisplayText() {
+    switch (_currentFilter) {
+      case TaskStatus.inProgress:
+        return 'Sedang Dikirim';
+      case TaskStatus.completed:
+        return 'Selesai';
+      case TaskStatus.all:
+      default:
+        return 'Semua Tugas';
+    }
+  }
+
+  IconData _getFilterIcon() {
+    switch (_currentFilter) {
+      case TaskStatus.inProgress:
+        return Icons.local_shipping;
+      case TaskStatus.completed:
+        return Icons.check_circle;
+      case TaskStatus.all:
+      default:
+        return Icons.filter_list;
+    }
+  }
+
+  Color _getFilterColor() {
+    switch (_currentFilter) {
+      case TaskStatus.inProgress:
+        return AppColors.warning;
+      case TaskStatus.completed:
+        return AppColors.success;
+      case TaskStatus.all:
+      default:
+        return AppColors.kurirColor;
+    }
   }
 
   @override
@@ -129,20 +191,142 @@ class _KurirDashboardState extends State<KurirDashboard>
   }
 
   Widget _buildTasksTab(KurirProvider kurirProvider) {
-    return RefreshIndicator(
-      onRefresh: () => kurirProvider.refreshTasks(),
-      child: kurirProvider.isLoading && kurirProvider.allTasks.isEmpty
-          ? const LoadingWidget(message: 'Memuat tugas...')
-          : kurirProvider.allTasks.isEmpty
-              ? _buildEmptyTasks()
-              : ListView.builder(
-                  padding: const EdgeInsets.all(16),
-                  itemCount: kurirProvider.allTasks.length,
-                  itemBuilder: (context, index) {
-                    final task = kurirProvider.allTasks[index];
-                    return _buildTaskCard(task, kurirProvider);
-                  },
+    // ⭐ APPLY FILTER
+    final filteredTasks = _getFilteredTasks(kurirProvider.allTasks);
+    
+    return Column(
+      children: [
+        // ⭐ FILTER HEADER
+        Container(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              // Filter Dropdown
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: AppColors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: _getFilterColor().withOpacity(0.3)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.black.withOpacity(0.05),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<TaskStatus>(
+                      value: _currentFilter,
+                      isExpanded: true,
+                      icon: Icon(
+                        Icons.keyboard_arrow_down,
+                        color: _getFilterColor(),
+                      ),
+                      style: TextStyle(
+                        color: _getFilterColor(),
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      onChanged: (TaskStatus? newValue) {
+                        if (newValue != null) {
+                          setState(() {
+                            _currentFilter = newValue;
+                          });
+                        }
+                      },
+                      items: [
+                        DropdownMenuItem(
+                          value: TaskStatus.all,
+                          child: Row(
+                            children: [
+                              Icon(Icons.filter_list, size: 16, color: AppColors.kurirColor),
+                              const SizedBox(width: 8),
+                              const Text('Semua Tugas'),
+                            ],
+                          ),
+                        ),
+                        DropdownMenuItem(
+                          value: TaskStatus.inProgress,
+                          child: Row(
+                            children: [
+                              Icon(Icons.local_shipping, size: 16, color: AppColors.warning),
+                              const SizedBox(width: 8),
+                              const Text('Sedang Dikirim'),
+                            ],
+                          ),
+                        ),
+                        DropdownMenuItem(
+                          value: TaskStatus.completed,
+                          child: Row(
+                            children: [
+                              Icon(Icons.check_circle, size: 16, color: AppColors.success),
+                              const SizedBox(width: 8),
+                              const Text('Selesai'),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
+              ),
+              
+              const SizedBox(width: 12),
+              
+              // Task Count Indicator
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                decoration: BoxDecoration(
+                  color: _getFilterColor().withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: _getFilterColor().withOpacity(0.3)),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      _getFilterIcon(),
+                      size: 16,
+                      color: _getFilterColor(),
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      '${filteredTasks.length}',
+                      style: TextStyle(
+                        color: _getFilterColor(),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        
+        // ⭐ TASK LIST
+        Expanded(
+          child: RefreshIndicator(
+            onRefresh: () => kurirProvider.refreshTasks(),
+            child: kurirProvider.isLoading && kurirProvider.allTasks.isEmpty
+                ? const LoadingWidget(message: 'Memuat tugas...')
+                : filteredTasks.isEmpty
+                    ? _buildEmptyTasks()
+                    : ListView.builder(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        itemCount: filteredTasks.length,
+                        itemBuilder: (context, index) {
+                          final task = filteredTasks[index];
+                          return _buildTaskCard(task, kurirProvider);
+                        },
+                      ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -151,12 +335,31 @@ class _KurirDashboardState extends State<KurirDashboard>
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.inbox_outlined, size: 64, color: AppColors.grey),
+          Icon(
+            _getFilterIcon(),
+            size: 64,
+            color: AppColors.grey,
+          ),
           const SizedBox(height: 16),
           Text(
-            'Tidak ada tugas pengiriman',
+            _currentFilter == TaskStatus.all 
+                ? 'Tidak ada tugas pengiriman'
+                : 'Tidak ada tugas dengan filter: ${_getFilterDisplayText()}',
             style: TextStyle(fontSize: 16, color: AppColors.grey),
+            textAlign: TextAlign.center,
           ),
+          if (_currentFilter != TaskStatus.all) ...[
+            const SizedBox(height: 12),
+            TextButton.icon(
+              onPressed: () {
+                setState(() {
+                  _currentFilter = TaskStatus.all;
+                });
+              },
+              icon: const Icon(Icons.clear),
+              label: const Text('Lihat Semua Tugas'),
+            ),
+          ],
         ],
       ),
     );
