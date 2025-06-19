@@ -22,8 +22,15 @@ class HunterKomisiDetailScreen extends StatefulWidget {
 
 class _HunterKomisiDetailScreenState extends State<HunterKomisiDetailScreen> {
   List<dynamic> komisiDetails = [];
+  List<dynamic> filteredKomisiDetails = [];
   bool isLoading = true;
   String? error;
+  
+  // Filter variables
+  int? selectedMonth;
+  int? selectedYear;
+  List<int> availableMonths = [];
+  List<int> availableYears = [];
 
   @override
   void initState() {
@@ -43,6 +50,8 @@ class _HunterKomisiDetailScreenState extends State<HunterKomisiDetailScreen> {
       setState(() {
         if (result['success'] == true) {
           komisiDetails = result['komisi_details'] ?? [];
+          _initializeFilters();
+          _applyFilters();
         } else {
           error = result['error'] ?? 'Gagal memuat detail komisi';
         }
@@ -55,6 +64,223 @@ class _HunterKomisiDetailScreenState extends State<HunterKomisiDetailScreen> {
       });
       print('❌ Error loading komisi details: $e');
     }
+  }
+
+  void _initializeFilters() {
+    // Always show all 12 months
+    availableMonths = List.generate(12, (index) => index + 1);
+    
+    // Only get years from actual data
+    Set<int> years = {};
+    
+    for (var komisi in komisiDetails) {
+      final tanggalPesan = komisi['tanggal_pesan'];
+      if (tanggalPesan != null) {
+        try {
+          DateTime date = DateTime.parse(tanggalPesan.toString());
+          years.add(date.year);
+        } catch (e) {
+          print('Error parsing date: $tanggalPesan');
+        }
+      }
+    }
+    
+    // Add current year if no data exists
+    if (years.isEmpty) {
+      years.add(DateTime.now().year);
+    }
+    
+    availableYears = years.toList()..sort((a, b) => b.compareTo(a)); // Sort descending
+  }
+
+  void _applyFilters() {
+    if (selectedMonth == null && selectedYear == null) {
+      filteredKomisiDetails = komisiDetails;
+    } else {
+      filteredKomisiDetails = komisiDetails.where((komisi) {
+        final tanggalPesan = komisi['tanggal_pesan'];
+        if (tanggalPesan == null) return false;
+        
+        try {
+          DateTime date = DateTime.parse(tanggalPesan.toString());
+          bool matchMonth = selectedMonth == null || date.month == selectedMonth;
+          bool matchYear = selectedYear == null || date.year == selectedYear;
+          return matchMonth && matchYear;
+        } catch (e) {
+          return false;
+        }
+      }).toList();
+    }
+  }
+
+  double _getFilteredTotalKomisi() {
+    double total = 0;
+    for (var komisi in filteredKomisiDetails) {
+      final komisiHunter = komisi['komisi_hunter'];
+      if (komisiHunter != null) {
+        total += double.tryParse(komisiHunter.toString()) ?? 0;
+      }
+    }
+    return total;
+  }
+
+  void _showFilterDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        int? tempMonth = selectedMonth;
+        int? tempYear = selectedYear;
+        
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return AlertDialog(
+              title: const Text(
+                'Filter Komisi',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.hunterColor,
+                ),
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Month filter
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: AppColors.greyLight),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<int?>(
+                        value: tempMonth,
+                        hint: const Text('Pilih Bulan'),
+                        isExpanded: true,
+                        items: [
+                          const DropdownMenuItem<int?>(
+                            value: null,
+                            child: Text('Semua Bulan'),
+                          ),
+                          ...availableMonths.map((month) => DropdownMenuItem<int?>(
+                            value: month,
+                            child: Text(_getMonthName(month)),
+                          )),
+                        ],
+                        onChanged: (value) {
+                          setDialogState(() {
+                            tempMonth = value;
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                  
+                  const SizedBox(height: 16),
+                  
+                  // Year filter
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: AppColors.greyLight),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<int?>(
+                        value: tempYear,
+                        hint: const Text('Pilih Tahun'),
+                        isExpanded: true,
+                        items: [
+                          const DropdownMenuItem<int?>(
+                            value: null,
+                            child: Text('Semua Tahun'),
+                          ),
+                          ...availableYears.map((year) => DropdownMenuItem<int?>(
+                            value: year,
+                            child: Text(year.toString()),
+                          )),
+                        ],
+                        onChanged: (value) {
+                          setDialogState(() {
+                            tempYear = value;
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text(
+                    'Batal',
+                    style: TextStyle(color: AppColors.grey),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    setState(() {
+                      selectedMonth = null;
+                      selectedYear = null;
+                      _applyFilters();
+                    });
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text(
+                    'Reset',
+                    style: TextStyle(color: AppColors.hunterColor),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      selectedMonth = tempMonth;
+                      selectedYear = tempYear;
+                      _applyFilters();
+                    });
+                    Navigator.of(context).pop();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.hunterColor,
+                    foregroundColor: AppColors.white,
+                  ),
+                  child: const Text('Terapkan'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  String _getMonthName(int month) {
+    const months = [
+      'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+      'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+    ];
+    return months[month - 1];
+  }
+
+  String _getActiveFilterText() {
+    if (selectedMonth == null && selectedYear == null) {
+      return 'Semua Data';
+    }
+    
+    String text = '';
+    if (selectedMonth != null) {
+      text += _getMonthName(selectedMonth!);
+    }
+    if (selectedYear != null) {
+      if (text.isNotEmpty) text += ' ';
+      text += selectedYear.toString();
+    }
+    return text;
   }
 
   @override
@@ -78,6 +304,28 @@ class _HunterKomisiDetailScreenState extends State<HunterKomisiDetailScreen> {
         ),
         actions: [
           IconButton(
+            onPressed: _showFilterDialog,
+            icon: Stack(
+              children: [
+                const Icon(Icons.filter_list),
+                if (selectedMonth != null || selectedYear != null)
+                  Positioned(
+                    right: 0,
+                    top: 0,
+                    child: Container(
+                      width: 8,
+                      height: 8,
+                      decoration: const BoxDecoration(
+                        color: Colors.red,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+            tooltip: 'Filter',
+          ),
+          IconButton(
             onPressed: _loadKomisiDetails,
             icon: const Icon(Icons.refresh),
             tooltip: 'Refresh',
@@ -89,6 +337,10 @@ class _HunterKomisiDetailScreenState extends State<HunterKomisiDetailScreen> {
           // Summary Card
           _buildSummaryCard(),
           
+          // Filter Info Card
+          if (selectedMonth != null || selectedYear != null)
+            _buildFilterInfoCard(),
+          
           // Commission Table
           Expanded(
             child: _buildCommissionTable(),
@@ -99,6 +351,12 @@ class _HunterKomisiDetailScreenState extends State<HunterKomisiDetailScreen> {
   }
 
   Widget _buildSummaryCard() {
+    final displayTotal = selectedMonth != null || selectedYear != null 
+        ? _getFilteredTotalKomisi() 
+        : widget.totalKomisi;
+    final displayTotalFormatted = KomisiService.formatCurrency(displayTotal);
+    final displayCount = filteredKomisiDetails.length;
+    
     return Container(
       width: double.infinity,
       margin: const EdgeInsets.all(16),
@@ -151,7 +409,7 @@ class _HunterKomisiDetailScreenState extends State<HunterKomisiDetailScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      widget.totalKomisiFormatted,
+                      displayTotalFormatted,
                       style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
@@ -173,7 +431,7 @@ class _HunterKomisiDetailScreenState extends State<HunterKomisiDetailScreen> {
                     const SizedBox(height: 2),
                     
                     Text(
-                      'Dari ${komisiDetails.length} transaksi',
+                      'Dari $displayCount transaksi',
                       style: const TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w400,
@@ -190,21 +448,80 @@ class _HunterKomisiDetailScreenState extends State<HunterKomisiDetailScreen> {
     );
   }
 
+  Widget _buildFilterInfoCard() {
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: AppColors.hunterColor.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: AppColors.hunterColor.withOpacity(0.3),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            Icons.filter_list,
+            size: 20,
+            color: AppColors.hunterColor,
+          ),
+          const SizedBox(width: 8),
+          Text(
+            'Filter aktif: ${_getActiveFilterText()}',
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: AppColors.hunterColor,
+            ),
+          ),
+          const Spacer(),
+          GestureDetector(
+            onTap: () {
+              setState(() {
+                selectedMonth = null;
+                selectedYear = null;
+                _applyFilters();
+              });
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: AppColors.hunterColor,
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: const Text(
+                'Reset',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.white,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildCommissionTable() {
     if (isLoading) {
       return _buildLoadingState();
     }
-
+    
     if (error != null) {
       return _buildErrorState();
     }
-
-    if (komisiDetails.isEmpty) {
+    
+    if (filteredKomisiDetails.isEmpty) {
       return _buildEmptyState();
     }
-
+    
     return Container(
-      margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+      margin: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(16),
@@ -221,13 +538,13 @@ class _HunterKomisiDetailScreenState extends State<HunterKomisiDetailScreen> {
         children: [
           // Table Header
           Container(
+            width: double.infinity,
             padding: const EdgeInsets.all(20),
             decoration: const BoxDecoration(
-              border: Border(
-                bottom: BorderSide(
-                  color: AppColors.greyLight,
-                  width: 1,
-                ),
+              color: AppColors.hunterColor,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(16),
+                topRight: Radius.circular(16),
               ),
             ),
             child: const Text(
@@ -235,7 +552,7 @@ class _HunterKomisiDetailScreenState extends State<HunterKomisiDetailScreen> {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: AppColors.greyDark,
+                color: AppColors.white,
               ),
             ),
           ),
@@ -243,24 +560,67 @@ class _HunterKomisiDetailScreenState extends State<HunterKomisiDetailScreen> {
           // Table Content
           Expanded(
             child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Container(
-                width: MediaQuery.of(context).size.width - 32,
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      // Table Headers
-                      _buildTableHeader(),
-                      
-                      // Table Rows
-                      ...komisiDetails.asMap().entries.map((entry) {
-                        int index = entry.key;
-                        dynamic komisi = entry.value;
-                        return _buildTableRow(komisi, index);
-                      }).toList(),
-                    ],
+              child: Column(
+                children: [
+                  // Header Row
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                    decoration: const BoxDecoration(
+                      color: AppColors.greyLight,
+                      border: Border(
+                        bottom: BorderSide(
+                          color: AppColors.greyLight,
+                          width: 1,
+                        ),
+                      ),
+                    ),
+                    child: const Row(
+                      children: [
+                        Expanded(
+                          flex: 2,
+                          child: Text(
+                            'ID Komisi',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.hunterColor,
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 2,
+                          child: Text(
+                            'ID Pemesanan',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.hunterColor,
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 2,
+                          child: Text(
+                            'Komisi Yang Didapatkan',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.hunterColor,
+                            ),
+                            textAlign: TextAlign.right,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
+                  
+                  // Data Rows
+                  ...filteredKomisiDetails.asMap().entries.map((entry) {
+                    final index = entry.key;
+                    final komisi = entry.value;
+                    return _buildTableRow(komisi, index);
+                  }).toList(),
+                ],
               ),
             ),
           ),
@@ -269,68 +629,16 @@ class _HunterKomisiDetailScreenState extends State<HunterKomisiDetailScreen> {
     );
   }
 
-  Widget _buildTableHeader() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: AppColors.hunterColor.withOpacity(0.1),
-        border: const Border(
-          bottom: BorderSide(
-            color: AppColors.greyLight,
-            width: 1,
-          ),
-        ),
-      ),
-      child: const Row(
-        children: [
-          Expanded(
-            flex: 2,
-            child: Text(
-              'ID Komisi',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                color: AppColors.hunterColor,
-              ),
-            ),
-          ),
-          Expanded(
-            flex: 2,
-            child: Text(
-              'ID Pemesanan',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                color: AppColors.hunterColor,
-              ),
-            ),
-          ),
-          Expanded(
-            flex: 3,
-            child: Text(
-              'Komisi Yang Didapatkan',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                color: AppColors.hunterColor,
-              ),
-              textAlign: TextAlign.right,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTableRow(dynamic komisi, int index) {
-    final isEven = index % 2 == 0;
-    final komisiAmount = (komisi['komisi_hunter'] ?? 0).toDouble();
-    final formattedKomisi = KomisiService.formatCurrency(komisiAmount);
+  Widget _buildTableRow(Map<String, dynamic> komisi, int index) {
+    final komisiHunter = komisi['komisi_hunter'];
+    final formattedKomisi = komisiHunter != null 
+        ? KomisiService.formatCurrency(double.tryParse(komisiHunter.toString()) ?? 0)
+        : 'Rp 0';
     
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
       decoration: BoxDecoration(
-        color: isEven ? AppColors.white : AppColors.greyLight.withOpacity(0.5),
+        color: index % 2 == 0 ? AppColors.white : AppColors.greyLight.withOpacity(0.5),
         border: const Border(
           bottom: BorderSide(
             color: AppColors.greyLight,
@@ -386,28 +694,28 @@ class _HunterKomisiDetailScreenState extends State<HunterKomisiDetailScreen> {
                 if (komisi['nama_produk'] != null) ...[
                   const SizedBox(height: 2),
                   Text(
-                    komisi['nama_produk'],
+                    komisi['nama_produk'].toString().length > 20
+                        ? '${komisi['nama_produk'].toString().substring(0, 20)}...'
+                        : komisi['nama_produk'].toString(),
                     style: const TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w400,
                       color: AppColors.grey,
                     ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ],
             ),
           ),
           
-          // Komisi Amount
+          // Komisi Hunter Amount
           Expanded(
-            flex: 3,
+            flex: 2,
             child: Text(
               formattedKomisi,
               style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
+                fontSize: 13,
+                fontWeight: FontWeight.w700,
                 color: AppColors.success,
               ),
               textAlign: TextAlign.right,
@@ -424,7 +732,7 @@ class _HunterKomisiDetailScreenState extends State<HunterKomisiDetailScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(AppColors.hunterColor),
+            color: AppColors.hunterColor,
           ),
           SizedBox(height: 16),
           Text(
@@ -458,16 +766,16 @@ class _HunterKomisiDetailScreenState extends State<HunterKomisiDetailScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(
+            Icon(
               Icons.error_outline,
               size: 64,
-              color: AppColors.error,
+              color: Colors.red.withOpacity(0.5),
             ),
             
             const SizedBox(height: 16),
             
             const Text(
-              'Terjadi Kesalahan',
+              'Gagal Memuat Data',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -504,6 +812,8 @@ class _HunterKomisiDetailScreenState extends State<HunterKomisiDetailScreen> {
   }
 
   Widget _buildEmptyState() {
+    final isFiltered = selectedMonth != null || selectedYear != null;
+    
     return Center(
       child: Container(
         padding: const EdgeInsets.all(24),
@@ -523,16 +833,16 @@ class _HunterKomisiDetailScreenState extends State<HunterKomisiDetailScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
-              Icons.receipt_long_outlined,
+              isFiltered ? Icons.search_off : Icons.receipt_long_outlined,
               size: 64,
               color: AppColors.grey.withOpacity(0.5),
             ),
             
             const SizedBox(height: 16),
             
-            const Text(
-              'Belum Ada Komisi',
-              style: TextStyle(
+            Text(
+              isFiltered ? 'Tidak Ada Komisi' : 'Belum Ada Komisi',
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
                 color: AppColors.greyDark,
@@ -541,9 +851,11 @@ class _HunterKomisiDetailScreenState extends State<HunterKomisiDetailScreen> {
             
             const SizedBox(height: 8),
             
-            const Text(
-              'Anda belum memiliki riwayat komisi.\nMulai bekerja untuk mendapatkan komisi!',
-              style: TextStyle(
+            Text(
+              isFiltered 
+                  ? _getFilteredEmptyMessage()
+                  : 'Anda belum memiliki riwayat komisi.\nMulai bekerja untuk mendapatkan komisi!',
+              style: const TextStyle(
                 fontSize: 14,
                 color: AppColors.grey,
               ),
@@ -552,19 +864,49 @@ class _HunterKomisiDetailScreenState extends State<HunterKomisiDetailScreen> {
             
             const SizedBox(height: 16),
             
-            ElevatedButton.icon(
-              onPressed: () => Navigator.pop(context),
-              icon: const Icon(Icons.arrow_back),
-              label: const Text('Kembali'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.hunterColor,
-                foregroundColor: AppColors.white,
+            if (isFiltered)
+              ElevatedButton.icon(
+                onPressed: () {
+                  setState(() {
+                    selectedMonth = null;
+                    selectedYear = null;
+                    _applyFilters();
+                  });
+                },
+                icon: const Icon(Icons.clear),
+                label: const Text('Reset Filter'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.hunterColor,
+                  foregroundColor: AppColors.white,
+                ),
+              )
+            else
+              ElevatedButton.icon(
+                onPressed: () => Navigator.pop(context),
+                icon: const Icon(Icons.arrow_back),
+                label: const Text('Kembali'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.hunterColor,
+                  foregroundColor: AppColors.white,
+                ),
               ),
-            ),
           ],
         ),
       ),
     );
+  }
+
+  String _getFilteredEmptyMessage() {
+    String period = '';
+    if (selectedMonth != null && selectedYear != null) {
+      period = 'di ${_getMonthName(selectedMonth!)} ${selectedYear}';
+    } else if (selectedMonth != null) {
+      period = 'di bulan ${_getMonthName(selectedMonth!)}';
+    } else if (selectedYear != null) {
+      period = 'di tahun ${selectedYear}';
+    }
+    
+    return 'Tidak ada komisi $period.\nCoba pilih periode lain atau reset filter.';
   }
 
   String _formatDate(dynamic dateValue) {
