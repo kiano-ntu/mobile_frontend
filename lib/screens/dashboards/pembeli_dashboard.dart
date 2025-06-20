@@ -1,9 +1,10 @@
-// File: lib/screens/dashboards/pembeli_dashboard.dart
+// File: lib/screens/dashboards/pembeli_dashboard.dart - UPDATED VERSION
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../utils/colors.dart';
+import '../dashboards/profile_pembeli.dart'; // Import halaman profile pembeli
 
 class PembeliDashboard extends StatelessWidget {
   const PembeliDashboard({Key? key}) : super(key: key);
@@ -24,95 +25,21 @@ class PembeliDashboard extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            actions: [
-              // Tombol Logout
-              IconButton(
-                onPressed: () => _showLogoutDialog(context, authProvider),
-                icon: const Icon(Icons.logout),
-                tooltip: 'Logout',
-              ),
-            ],
           ),
-          body: Center(
-            child: Container(
-              padding: const EdgeInsets.all(32),
-              margin: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: AppColors.white,
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.black.withOpacity(0.1),
-                    blurRadius: 20,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
+          body: RefreshIndicator(
+            onRefresh: () async {
+              // Add refresh logic here if needed
+            },
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.all(16),
               child: Column(
-                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Icon Pembeli
-                  Container(
-                    width: 80,
-                    height: 80,
-                    decoration: BoxDecoration(
-                      color: AppColors.pembeliColor.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(40),
-                    ),
-                    child: const Icon(
-                      Icons.person,
-                      size: 40,
-                      color: AppColors.pembeliColor,
-                    ),
-                  ),
+                  // MAIN WELCOME CARD - Updated with "Lihat Profile" button
+                  _buildWelcomeCard(context, authProvider),
                   
-                  const SizedBox(height: 24),
-                  
-                  // Greeting Text
-                  Text(
-                    'Halo ${authProvider.userName ?? 'Pembeli'}!',
-                    style: const TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.greyDark,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  
-                  const SizedBox(height: 16),
-                  
-                  // Role Text
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 8,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.pembeliColor,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: const Text(
-                      'Pembeli',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.white,
-                      ),
-                    ),
-                  ),
-                  
-                  const SizedBox(height: 24),
-                  
-                  // Welcome Message
-                  Text(
-                    'Selamat datang di ReUseMart!\nSiap berbelanja barang bekas berkualitas?',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: AppColors.grey,
-                      height: 1.5,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
+                  const SizedBox(height: 20),
                 ],
               ),
             ),
@@ -122,32 +49,111 @@ class PembeliDashboard extends StatelessWidget {
     );
   }
 
-  void _showLogoutDialog(BuildContext context, AuthProvider authProvider) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Konfirmasi Logout'),
-        content: const Text('Apakah Anda yakin ingin keluar dari aplikasi?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Batal'),
+  // UPDATED: Welcome Card Widget with "Lihat Profile" button
+  Widget _buildWelcomeCard(BuildContext context, AuthProvider authProvider) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.grey.withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
           ),
-          TextButton(
-            onPressed: () async {
-              Navigator.pop(context);
-              await authProvider.logout();
-              if (context.mounted) {
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                  '/login',
-                  (route) => false,
-                );
-              }
-            },
-            child: const Text(
-              'Logout',
-              style: TextStyle(color: AppColors.error),
+        ],
+      ),
+      child: Column(
+        children: [
+          // Profile Avatar
+          Container(
+            width: 80,
+            height: 80,
+            decoration: BoxDecoration(
+              color: AppColors.pembeliColor.withOpacity(0.1),
+              shape: BoxShape.circle,
             ),
+            child: const Icon(
+              Icons.person,
+              size: 40,
+              color: AppColors.pembeliColor,
+            ),
+          ),
+          
+          const SizedBox(height: 16),
+          
+          // Welcome Message
+          Text(
+            'Halo Kevin Denyno!', // You can make this dynamic from authProvider
+            style: const TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: AppColors.greyDark,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          
+          const SizedBox(height: 12),
+          
+          // Role Badge
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+            decoration: BoxDecoration(
+              color: AppColors.pembeliColor,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: const Text(
+              'Pembeli',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: AppColors.white,
+              ),
+            ),
+          ),
+          
+          const SizedBox(height: 16),
+          
+          // NEW: "Lihat Profile" Button
+          OutlinedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ProfilePembeli(),
+                ),
+              );
+            },
+            style: OutlinedButton.styleFrom(
+              side: const BorderSide(color: AppColors.pembeliColor),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+            ),
+            child: const Text(
+              'Lihat Profile',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: AppColors.pembeliColor,
+              ),
+            ),
+          ),
+          
+          const SizedBox(height: 16),
+          
+          // Welcome Message
+          Text(
+            'Selamat datang di ReUseMart!\nSiap berbelanja barang bekas berkualitas?',
+            style: TextStyle(
+              fontSize: 16,
+              color: AppColors.grey,
+              height: 1.5,
+            ),
+            textAlign: TextAlign.center,
           ),
         ],
       ),

@@ -1,9 +1,8 @@
-// File: lib/screens/dashboards/hunter_dashboard.dart
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../utils/colors.dart';
+import '../../widgets/loading_widget.dart';
 
 class HunterDashboard extends StatelessWidget {
   const HunterDashboard({Key? key}) : super(key: key);
@@ -25,7 +24,13 @@ class HunterDashboard extends StatelessWidget {
               ),
             ),
             actions: [
-              // Tombol Logout
+              // Profile Button
+              IconButton(
+                onPressed: () => Navigator.pushNamed(context, '/hunter/profile'),
+                icon: const Icon(Icons.person),
+                tooltip: 'Profil',
+              ),
+              // Logout Button
               IconButton(
                 onPressed: () => _showLogoutDialog(context, authProvider),
                 icon: const Icon(Icons.logout),
@@ -104,14 +109,66 @@ class HunterDashboard extends StatelessWidget {
                   const SizedBox(height: 24),
                   
                   // Welcome Message
-                  Text(
-                    'Selamat datang di ReUseMart!\nSiap berburu barang berkualitas?',
+                  const Text(
+                    'Selamat datang di ReUseMart!\nSiap berburu barang bekas berkualitas?',
                     style: TextStyle(
                       fontSize: 16,
                       color: AppColors.grey,
                       height: 1.5,
                     ),
                     textAlign: TextAlign.center,
+                  ),
+                  
+                  const SizedBox(height: 32),
+                  
+                  // Quick Action Buttons
+                  Column(
+                    children: [
+                      // View Profile Button
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          onPressed: () => Navigator.pushNamed(context, '/hunter/profile'),
+                          icon: const Icon(Icons.person),
+                          label: const Text('Lihat Profil'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.hunterColor,
+                            foregroundColor: AppColors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                        ),
+                      ),
+                      
+                      const SizedBox(height: 12),
+                      
+                      // Additional Action Button (Future feature)
+                      SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton.icon(
+                          onPressed: () {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Fitur akan segera tersedia'),
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                          },
+                          icon: const Icon(Icons.search),
+                          label: const Text('Mulai Berburu'),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: AppColors.hunterColor,
+                            side: const BorderSide(color: AppColors.hunterColor),
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -136,7 +193,19 @@ class HunterDashboard extends StatelessWidget {
           TextButton(
             onPressed: () async {
               Navigator.pop(context);
+              
+              // Show loading
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (context) => const LoadingWidget(
+                  message: 'Sedang logout...',
+                ),
+              );
+              
               await authProvider.logout();
+              
+              // Navigate to login
               if (context.mounted) {
                 Navigator.of(context).pushNamedAndRemoveUntil(
                   '/login',

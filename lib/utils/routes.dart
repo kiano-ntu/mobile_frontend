@@ -1,4 +1,4 @@
-// File: lib/config/routes.dart
+// File: lib/utils/routes.dart
 
 import 'package:flutter/material.dart';
 import '../screens/auth/splash_screen.dart';
@@ -8,6 +8,10 @@ import '../screens/dashboards/pembeli_dashboard.dart';
 import '../screens/dashboards/penitip_dashboard.dart';
 import '../screens/dashboards/kurir_dashboard.dart';
 import '../screens/dashboards/hunter_dashboard.dart';
+import '../screens/hunter/hunter_profile_screen.dart';
+import '../screens/merchandise/merchandise_catalog_screen.dart';
+import '../screens/merchandise/merchandise_detail_screen.dart';
+import '../models/merchandise.dart';
 
 class AppRoutes {
   // Route Names
@@ -18,6 +22,10 @@ class AppRoutes {
   static const String penitipDashboard = '/penitip-dashboard';
   static const String kurirDashboard = '/kurir-dashboard';
   static const String hunterDashboard = '/hunter-dashboard';
+  static const String hunterProfile = '/hunter/profile';
+  static const String hunterKomisiDetail = '/hunter/komisi-detail';
+  static const String merchandiseCatalog = '/merchandise-catalog';
+  static const String merchandiseDetail = '/merchandise-detail';
 
   // Static Routes Map
   static Map<String, WidgetBuilder> get routes => {
@@ -28,6 +36,8 @@ class AppRoutes {
     penitipDashboard: (context) => const PenitipDashboard(),
     kurirDashboard: (context) => const KurirDashboard(),
     hunterDashboard: (context) => const HunterDashboard(),
+    hunterProfile: (context) => const HunterProfileScreen(),
+    merchandiseCatalog: (context) => const MerchandiseCatalogScreen(),
   };
 
   // Dynamic Route Generator
@@ -45,6 +55,12 @@ class AppRoutes {
           settings: settings,
         );
         
+      case home:
+        return MaterialPageRoute(
+          builder: (context) => const HomeScreen(),
+          settings: settings,
+        );
+        
       case pembeliDashboard:
         return MaterialPageRoute(
           builder: (context) => const PembeliDashboard(),
@@ -56,7 +72,7 @@ class AppRoutes {
           builder: (context) => const PenitipDashboard(),
           settings: settings,
         );
-        
+   
       case kurirDashboard:
         return MaterialPageRoute(
           builder: (context) => const KurirDashboard(),
@@ -69,6 +85,32 @@ class AppRoutes {
           settings: settings,
         );
         
+      case hunterProfile:
+        return MaterialPageRoute(
+          builder: (context) => const HunterProfileScreen(),
+          settings: settings,
+        );
+        
+      case merchandiseCatalog:
+        return MaterialPageRoute(
+          builder: (context) => const MerchandiseCatalogScreen(),
+          settings: settings,
+        );
+        
+      case merchandiseDetail:
+        if (settings.arguments is Merchandise) {
+          return MaterialPageRoute(
+            builder: (context) => MerchandiseDetailScreen(
+              merchandise: settings.arguments as Merchandise,
+            ),
+            settings: settings,
+          );
+        }
+        return MaterialPageRoute(
+          builder: (context) => const NotFoundScreen(),
+          settings: settings,
+        );
+        
       default:
         return MaterialPageRoute(
           builder: (context) => const NotFoundScreen(),
@@ -78,7 +120,6 @@ class AppRoutes {
   }
 }
 
-// 404 Screen untuk route yang tidak ditemukan
 class NotFoundScreen extends StatelessWidget {
   const NotFoundScreen({Key? key}) : super(key: key);
 

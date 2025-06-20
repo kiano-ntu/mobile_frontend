@@ -34,6 +34,28 @@ class AppConfig {
   // ============= KURIR SPECIFIC ENDPOINTS =============
   static const String kurirProfileEndpoint = '$apiUrl/kurir/profile';
   static const String kurirTasksEndpoint = '$apiUrl/kurir/delivery-tasks';
+
+    // ============= PEMBELI MOBILE ENDPOINTS =============
+  static const String mobileApiUrl = '$apiUrl/mobile';
+  static const String pembeliMobileEndpoint = '$mobileApiUrl/pembeli';
+  static const String pembeliMobileLoginEndpoint = '$pembeliMobileEndpoint/login';
+  static const String pembeliMobileProfileEndpoint = '$pembeliMobileEndpoint/profil';
+  static const String pembeliMobileUpdateEndpoint = '$pembeliMobileEndpoint/profile';
+  static const String pembeliMobileRiwayatPoinEndpoint = '$pembeliMobileEndpoint/riwayat-poin';
+  static const String pembeliMobileDashboardEndpoint = '$pembeliMobileEndpoint/dashboard';
+  static const String pembeliMobileLogoutEndpoint = '$pembeliMobileEndpoint/logout';
+  static const String pembeliMobileHistoryEndpoint = '$pembeliMobileEndpoint/history';
+
+  // PENITIP MOBILE ENDPOINTS
+  static const String penitipMobileEndpoint = '$mobileApiUrl/penitip';
+  static const String penitipMobileProfileEndpoint = '$penitipMobileEndpoint/profil';
+  static const String penitipMobileUpdateEndpoint = '$penitipMobileEndpoint/profil/update';
+  static const String penitipMobileDashboardEndpoint = '$penitipMobileEndpoint/dashboard';
+  static const String penitipMobileProdukEndpoint = '$penitipMobileEndpoint/produk';
+  static const String penitipMobileTransaksiEndpoint = '$penitipMobileEndpoint/transaksi';
+  static const String penitipMobileIncomeEndpoint = '$penitipMobileEndpoint/income';
+  static const String penitipMobilePointsEndpoint = '$penitipMobileEndpoint/points';
+  static const String penitipMobileLogoutEndpoint = '$penitipMobileEndpoint/logout';
   
   // ============= LOCAL STORAGE KEYS =============
   static const String authTokenKey = 'auth_token';
