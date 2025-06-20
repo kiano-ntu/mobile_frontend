@@ -34,12 +34,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         for (String imageName in imageNames) {
           final trimmedName = imageName.trim();
           if (trimmedName.isNotEmpty) {
-            final imageUrl = 'http://192.168.180.187:8000/storage/products/$trimmedName';
+            final imageUrl = 'http://192.168.213.225:8000/storage/products/$trimmedName';
             images.add(imageUrl);
           }
         }
       } else {
-        final imageUrl = 'http://192.168.180.187:8000/storage/products/${widget.product.gambarProduk.trim()}';
+        final imageUrl = 'http://192.168.213.225:8000/storage/products/${widget.product.gambarProduk.trim()}';
         images.add(imageUrl);
       }
     }

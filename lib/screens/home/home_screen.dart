@@ -662,26 +662,22 @@ class _HomeScreenState extends State<HomeScreen> {
       {
         'icon': Icons.verified,
         'title': 'Kualitas Terjamin',
-        'description':
-            'Setiap barang melewati proses Quality Control ketat untuk memastikan kualitasnya.',
+        'description': 'Setiap barang melewati proses Quality Control ketat untuk menjamin kualitas.',
       },
       {
         'icon': Icons.eco,
         'title': 'Mendukung Lingkungan',
-        'description':
-            'Dengan membeli barang bekas, Anda turut berkontribusi dalam upaya pelestarian lingkungan.',
+        'description': 'Dengan membeli barang bekas, anda berkontribusi dalam pelestarian lingkungan.',
       },
       {
         'icon': Icons.security,
         'title': 'Transaksi Aman',
-        'description':
-            'Sistem pembayaran dan pengiriman yang aman dan terpercaya untuk semua transaksi.',
+        'description': 'Sistem pembayaran dan pengiriman yang aman dan terpercaya.',
       },
       {
         'icon': Icons.volunteer_activism,
         'title': 'Program Donasi',
-        'description':
-            'Barang yang tidak terjual dapat disumbangkan ke organisasi sosial yang membutuhkan.',
+        'description': 'Barang tidak terjual dapat disumbangkan ke organisasi yang membutuhkan.',
       },
     ];
 
@@ -716,13 +712,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 crossAxisCount: 2,
                 crossAxisSpacing: 16,
                 mainAxisSpacing: 16,
-                childAspectRatio: 0.9,
+                childAspectRatio: 0.85, // OPTIMIZED: Better ratio for content
               ),
               itemCount: features.length,
               itemBuilder: (context, index) {
                 final feature = features[index];
                 return Container(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(14), // Slightly reduced padding
                   decoration: BoxDecoration(
                     color: AppColors.white,
                     borderRadius: BorderRadius.circular(16),
@@ -737,6 +733,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      // Icon container
                       Container(
                         width: 40,
                         height: 40,
@@ -750,22 +747,37 @@ class _HomeScreenState extends State<HomeScreen> {
                           color: AppColors.primary,
                         ),
                       ),
-                      const SizedBox(height: 12),
-                      Text(
-                        feature['title'] as String,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.greyDark,
+                      const SizedBox(height: 10), // Reduced spacing
+                      
+                      // Title with fixed height
+                      SizedBox(
+                        height: 32, // Fixed height for title area
+                        child: Text(
+                          feature['title'] as String,
+                          style: const TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.greyDark,
+                            height: 1.2,
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      const SizedBox(height: 8),
-                      Text(
-                        feature['description'] as String,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: AppColors.grey,
-                          height: 1.4,
+                      
+                      const SizedBox(height: 6), // Reduced spacing
+                      
+                      // Description with flexible height
+                      Expanded(
+                        child: Text(
+                          feature['description'] as String,
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: AppColors.grey,
+                            height: 1.3,
+                          ),
+                          maxLines: 4, // Allow more lines for description
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ],

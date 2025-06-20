@@ -207,7 +207,7 @@ class ReUseMartApp extends StatelessWidget {
           ),
 
           // Card Theme
-          cardTheme: CardTheme(
+          cardTheme: CardThemeData(
             elevation: 2,
             shadowColor: AppColors.black.withOpacity(0.1),
             shape: RoundedRectangleBorder(
@@ -226,7 +226,7 @@ class ReUseMartApp extends StatelessWidget {
           ),
 
           // Dialog Theme
-          dialogTheme: const DialogTheme(
+          dialogTheme: const DialogThemeData(
             backgroundColor: AppColors.white,
             elevation: 8,
             shape: RoundedRectangleBorder(
@@ -313,7 +313,7 @@ class ReUseMartApp extends StatelessWidget {
           ),
 
           // Tab Bar Theme
-          tabBarTheme: const TabBarTheme(
+          tabBarTheme: const TabBarThemeData(
             labelColor: AppColors.primary,
             unselectedLabelColor: AppColors.grey,
             indicatorColor: AppColors.primary,

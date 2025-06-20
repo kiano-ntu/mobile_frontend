@@ -2,7 +2,7 @@ class AppConfig {
   // ============= LARAVEL BACKEND CONFIGURATION =============
   
   // Menggunakan IP address komputer Anda
-  static const String baseUrl = 'http://192.168.1.5:8000';
+  static const String baseUrl = 'http://192.168.213.225:8000';
   
   // Alternatif URL untuk testing berbeda platform:
   // static const String baseUrl = 'http://10.0.2.2:8000';        // Untuk Android Emulator

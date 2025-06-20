@@ -42,7 +42,7 @@ class Merchandise {
     }
     
     // Construct the full URL using your Laravel storage setup
-    return 'http://192.168.180.187:8000/storage/merchs/${gambarMerch!.trim()}';
+    return 'http://192.168.213.225:8000/storage/merchs/${gambarMerch!.trim()}';
   }
 
   // Helper method to check if merchandise is available

@@ -73,10 +73,10 @@ class Product {
     if (gambarProduk.contains(',')) {
       final images = gambarProduk.split(',');
       final firstImage = images.first.trim();
-      return 'http://192.168.180.187:8000/storage/products/$firstImage';
+      return 'http://192.168.213.225:8000/storage/products/$firstImage';
     }
 
-    return 'http://192.168.180.187:8000/storage/products/${gambarProduk.trim()}';
+    return 'http://192.168.213.225:8000/storage/products/${gambarProduk.trim()}';
   }
 
   // Helper method to get all image URLs
@@ -93,12 +93,12 @@ class Product {
       for (String name in imageNames) {
         final trimmedName = name.trim();
         if (trimmedName.isNotEmpty) {
-          images.add('http://192.168.180.187:8000/storage/products/$trimmedName');
+          images.add('http://192.168.213.225:8000/storage/products/$trimmedName');
         }
       }
     } else {
       // Single image
-      images.add('http://192.168.180.187:8000/storage/products/${gambarProduk.trim()}');
+      images.add('http://192.168.213.225:8000/storage/products/${gambarProduk.trim()}');
     }
 
     return images;
