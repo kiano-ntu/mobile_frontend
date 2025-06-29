@@ -32,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
       final client = http.Client();
       final response = await client.get(
         Uri.parse(
-            'http://10.0.2.2:8000/api/public/mobile/top-sellers-simple?limit=5'),
+            'http://192.168.213.225:8000/api/public/mobile/top-sellers-simple?limit=5'),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -242,7 +242,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Expanded(
                   child: ElevatedButton.icon(
                     onPressed: () {
-                      // Explore products action
+                      Navigator.of(context).pushNamed('/product-page');
                     },
                     icon: const Icon(Icons.search),
                     label: const Text('Jelajahi Produk'),
@@ -821,7 +821,7 @@ class _HomeScreenState extends State<HomeScreen> {
               width: double.infinity,
               child: ElevatedButton.icon(
                 onPressed: () {
-                  // Explore products action
+                  Navigator.of(context).pushNamed('/product-page');
                 },
                 icon: const Icon(Icons.search),
                 label: const Text('Jelajahi Produk'),

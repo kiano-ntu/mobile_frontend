@@ -519,11 +519,11 @@ class _HistoryPembeliState extends State<HistoryPembeli>
                       border:
                           Border.all(color: AppColors.grey.withOpacity(0.3)),
                     ),
-                    child: pemesanan.penitipan?.produk?.fotoProduk != null
+                    child: pemesanan.penitipan?.produk?.gambarProduk != null
                         ? ClipRRect(
                             borderRadius: BorderRadius.circular(8),
                             child: Image.network(
-                              pemesanan.penitipan!.produk!.fotoProduk!,
+                              pemesanan.penitipan!.produk!.gambarProduk!,
                               fit: BoxFit.cover,
                               errorBuilder: (context, error, stackTrace) {
                                 return const Icon(
@@ -911,11 +911,11 @@ class _HistoryPembeliState extends State<HistoryPembeli>
               borderRadius: BorderRadius.circular(8),
               border: Border.all(color: AppColors.grey.withOpacity(0.3)),
             ),
-            child: pemesanan.penitipan?.produk?.fotoProduk != null
+            child: pemesanan.penitipan?.produk?.gambarProduk != null
                 ? ClipRRect(
                     borderRadius: BorderRadius.circular(8),
                     child: Image.network(
-                      pemesanan.penitipan!.produk!.fotoProduk!,
+                      pemesanan.penitipan!.produk!.gambarProduk!,
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
                         return const Icon(

@@ -411,7 +411,7 @@ class ProdukPemesanan {
   final String namaProduk;
   final String? deskripsiProduk;
   final double hargaProduk;
-  final String? fotoProduk;
+  final String? gambarProduk;
   final String statusProduk;
   final PenitipPemesanan? penitip;
 
@@ -420,7 +420,7 @@ class ProdukPemesanan {
     required this.namaProduk,
     this.deskripsiProduk,
     required this.hargaProduk,
-    this.fotoProduk,
+    this.gambarProduk,
     required this.statusProduk,
     this.penitip,
   });
@@ -431,7 +431,7 @@ class ProdukPemesanan {
       namaProduk: json['nama_produk']?.toString() ?? '',
       deskripsiProduk: json['deskripsi_produk']?.toString(),
       hargaProduk: (json['harga_produk'] as num?)?.toDouble() ?? 0.0,
-      fotoProduk: json['foto_produk']?.toString(),
+      gambarProduk: json['gambar_produk']?.toString(),
       statusProduk: json['status_produk']?.toString() ?? '',
       penitip: json['penitip'] != null
           ? PenitipPemesanan.fromJson(json['penitip'] as Map<String, dynamic>)
@@ -445,7 +445,7 @@ class ProdukPemesanan {
       'nama_produk': namaProduk,
       'deskripsi_produk': deskripsiProduk,
       'harga_produk': hargaProduk,
-      'foto_produk': fotoProduk,
+      'gambar_produk': gambarProduk,
       'status_produk': statusProduk,
       'penitip': penitip?.toJson(),
     };

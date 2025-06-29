@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../screens/auth/splash_screen.dart';
 import '../screens/auth/login_screen.dart';
 import '../screens/home/home_screen.dart';
+import '../screens/dashboards/product_page.dart';
 import '../screens/dashboards/pembeli_dashboard.dart';
 import '../screens/dashboards/penitip_dashboard.dart';
 import '../screens/dashboards/kurir_dashboard.dart';
@@ -18,6 +19,7 @@ class AppRoutes {
   static const String splash = '/';
   static const String login = '/login';
   static const String home = '/home';
+  static const String product = '/product-page';
   static const String pembeliDashboard = '/pembeli-dashboard';
   static const String penitipDashboard = '/penitip-dashboard';
   static const String kurirDashboard = '/kurir-dashboard';
@@ -31,6 +33,7 @@ class AppRoutes {
   static Map<String, WidgetBuilder> get routes => {
     splash: (context) => const SplashScreen(),
     home: (context) => const HomeScreen(),
+    product: (context) => const ProductPage(),
     login: (context) => const LoginScreen(),
     pembeliDashboard: (context) => const PembeliDashboard(),
     penitipDashboard: (context) => const PenitipDashboard(),
@@ -56,6 +59,12 @@ class AppRoutes {
         );
         
       case home:
+        return MaterialPageRoute(
+          builder: (context) => const HomeScreen(),
+          settings: settings,
+        );
+
+      case product:
         return MaterialPageRoute(
           builder: (context) => const HomeScreen(),
           settings: settings,
